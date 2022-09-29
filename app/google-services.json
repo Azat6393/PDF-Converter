@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "174832374276",
+    "project_id": "w-scann",
+    "storage_bucket": "w-scann.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:174832374276:android:d1221b30da057956429b51",
+        "android_client_info": {
+          "package_name": "woynapp.wsann"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "174832374276-4jlaet48vb9g02dn62gaarumkpp6bqfk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "woynapp.wsann",
+            "certificate_hash": "2eb1cfc5acf1629e197ab97261a1e477470ea369"
+          }
+        },
+        {
+          "client_id": "174832374276-2vl6jtt609svdooqv4ke13oebo3teumu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKFJv23ItJ1b-pxlevnc10CBHn5NcTiXo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "174832374276-2vl6jtt609svdooqv4ke13oebo3teumu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

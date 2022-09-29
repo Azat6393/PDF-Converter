@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/homeFragment"
+        android:icon="@drawable/new_home"
+        android:title="@string/home_page" />
+
+    <item
+        android:id="@+id/documentFragment"
+        android:icon="@drawable/new_document"
+        android:title="@string/document" />
+
+    <item
+        android:id="@+id/empty"
+        android:title="" />
+
+    <item
+        android:id="@+id/toolFragment"
+        android:icon="@drawable/new_tool"
+        android:title="@string/tool" />
+
+    <item
+        android:id="@+id/profileFragment"
+        android:icon="@drawable/new_person"
+        android:title="@string/profile" />
+
+</menu>

@@ -33,6 +33,31 @@
 
     <string name="please_wait">Подождите</string>
 
+    <string name="log_in_with_google">Войти через Google</string>
+    <string name="document">Документ</string>
+    <string name="tool">Инструмент</string>
+    <string name="profile">Профиль</string>
+    <string name="login_with_facebook">Войти через Facebook</string>
+    <string name="sign_in">Войти</string>
+    <string name="sign_up">Зарегистрироваться</string>
+    <string name="enter_your_email_address">Адрес электронной почты</string>
+    <string name="password">Пароль</string>
+    <string name="confirm_password">Подтвердите пароль</string>
+    <string name="please_enter_email">Пожалуйста, введите адрес электронной почты</string>
+    <string name="confirm_password_message">Пароль и пароль для подтверждения должны совпадать</string>
+    <string name="name">Имя</string>
+    <string name="last_name">Фамилия</string>
+    <string name="please_enter_name">Пожалуйста, введите имя и фамилию</string>
+    <string name="log_out">Выйти</string>
+    <string name="dialog_message">Вы действительно хотите выйти</string>
+    <string name="dialog_title">выйти</string>
+    <string name="phone_number">Номер телефона (например, +90-999-999-9999)</string>
+    <string name="please_enter_phone_number">Пожалуйста, введите номер телефона</string>
+    <string name="continue_text">Продолжить</string>
+    <string name="verify_your_phone_number">Номер телефона</string>
+    <string name="pesmission_canceled_message">Разрешение отменено</string>
+    <string name="faqs">Часто задаваемые вопросы</string>
+
     <string name="bundleKey">ImageUri</string>
     <string name="whatsappToast">Извините, невозможно добавить изображения. Выберите их с помощью опции *Выбор изображений*</string>
     <string name="successToast">Изображения добавлены.</string>
@@ -460,5 +485,4 @@
     <string name="delete_alert_singular">Вы хотите удалить выбранный файл?</string>
     <string name="snackbar_files_deleted">Файлы удалены</string>
   <string name="lbl_recently_used">Недавно использованная особенность</string>
-    <string name="log_in_with_google">Log in with Google</string>
 </resources>

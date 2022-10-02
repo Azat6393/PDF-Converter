@@ -22,6 +22,30 @@
     <string name="prompt_input">Hier eingeben</string>
     <string name="faqSearch">FAQ durchsuchen</string>
 
+    <string name="log_in_with_google">Mit Google anmelden</string>
+    <string name="document">Dokument</string>
+    <string name="tool">Werkzeug</string>
+    <string name="profile">Profil</string>
+    <string name="login_with_facebook">Mit Facebook anmelden</string>
+    <string name="sign_in">Anmelden</string>
+    <string name="sign_up">Melde dich an</string>
+    <string name="enter_your_email_address">E-Mail-Adresse oder Telefonnummer</string>
+    <string name="password">Passwort</string>
+    <string name="confirm_password">Passwort bestätigen</string>
+    <string name="please_enter_email">Bitte E-Mail eingeben</string>
+    <string name="confirm_password_message">Passwort und Bestätigungspasswort sollten gleich sein</string>
+    <string name="name">Name</string>
+    <string name="last_name">Nachname</string>
+    <string name="please_enter_name">Bitte Vor- und Nachnamen eingeben</string>
+    <string name="log_out">Abmelden</string>
+    <string name="dialog_message">Möchten Sie sich wirklich abmelden</string>
+    <string name="dialog_title">Sing heraus</string>
+    <string name="phone_number">Telefonnummer (z. B. +90-999-999-9999)</string>
+    <string name="please_enter_phone_number">Bitte Telefonnummer eingeben</string>
+    <string name="continue_text">Weiter</string>
+    <string name="verify_your_phone_number">Telefonnummer</string>
+    <string name="pesmission_canceled_message">Berechtigung aufgehoben</string>
+    <string name="faqs">Häufig gestellte Fragen</string>
 
     <array name="items">
         <item>Datei öffnen</item>
@@ -516,7 +540,6 @@
     <string name="snackbar_files_deleted">Dateien gelöscht</string>
 
     <string name="lbl_recently_used">Kürzlich verwendete Funktionen</string>
-    <string name="log_in_with_google">Log in with Google</string>
 
 
 </resources>

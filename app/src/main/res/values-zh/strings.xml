@@ -27,6 +27,32 @@
         <item>加入水印</item>
     </array>
 
+    <string name="log_in_with_google">用谷歌登錄</string>
+    <string name="faqSearch">搜索常見問題</string>
+    <string name="document">文檔</string>
+    <string name="tool">工具</string>
+    <string name="profile">個人資料</string>
+    <string name="login_with_facebook">用 Facebook 登錄</string>
+    <string name="sign_in">登錄</string>
+    <string name="sign_up">註冊</string>
+    <string name="enter_your_email_address">電子郵件地址或電話號碼</string>
+    <string name="password">密碼</string>
+    <string name="confirm_password">確認密碼</string>
+    <string name="please_enter_email">請輸入郵箱</string>
+    <string name="confirm_password_message">密碼和確認密碼要一致</string>
+    <string name="name">名稱</string>
+    <string name="last_name">姓氏</string>
+    <string name="please_enter_name">請輸入姓名和姓氏</string>
+    <string name="log_out">退出</string>
+    <string name="dialog_message">您確定要退出</string>
+    <string name="dialog_title">唱出來</string>
+    <string name="phone_number">電話號碼（例如+90-999-999-9999）</string>
+    <string name="please_enter_phone_number">請輸入電話號碼</string>
+    <string name="continue_text">繼續</string>
+    <string name="verify_your_phone_number">電話號碼</string>
+    <string name="pesmission_canceled_message">權限取消</string>
+    <string name="faqs">常見問題</string>
+
     <array name="itemIds" translatable="false">
         <item>open</item>
         <item>delete</item>
@@ -543,8 +569,6 @@
     <string name="lbl_recently_used">最近已使用功能</string>
 
     <!--  FAQs  -->
-    <string name="faqSearch">搜索常见问答</string>
-    <string name="log_in_with_google">Log in with Google</string>
     <string-array name="faq_question_answers">
         <item>什么文件类型会被支持？#####此应用程式支持jpeg、jpg、tiff、gif、psd、bmp、eps、png等等。</item>
         <item>我可否用此应用程式创建新文字文档？#####你只能够利用摘取已存在PDF文档的文字来创建新文字文档。以创建文字文档， \n1) 在主页点击 <strong>摘取文字</strong> 选项. \n2) 用<strong>选择PDF文件</strong>按钮选择PDF。 \n3) 然后，点击<strong>摘取文字</strong>. \n4) 一旦完成，一份文字文档连带PDF所属文字将会被创建。</item>

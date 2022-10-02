@@ -11,7 +11,7 @@
     <string name="create_pdf_text">PDF Oluştur</string>
     <string name="details"><b>Detaylar</b></string>
     <string name="search_hint">Dosyanın Adı</string>
-    <string name="search">ara</string>
+    <string name="search">Arama</string>
     <string name="default_content_description">açıklama yok</string>
     <string name="prompt_input">Buraya girin</string>
 
@@ -37,6 +37,32 @@
         <item>e-posta</item>
         <item>ayrıntılar</item>
     </array>
+
+    <string name="log_in_with_google">Google ile oturum açın</string>
+    <string name="faqSearch">SSS Arama</string>
+    <string name="document">Belge</string>
+    <string name="tool">Araç</string>
+    <string name="profile">Profil</string>
+    <string name="login_with_facebook">Facebook ile giriş yapın</string>
+    <string name="sign_in">Oturum aç</string>
+    <string name="sign_up">Kayt ol</string>
+    <string name="enter_your_email_address">E-posta</string>
+    <string name="password">Parola</string>
+    <string name="confirm_password">Şifreyi onayla</string>
+    <string name="please_enter_email">Lütfen e-posta adresinizi girin</string>
+    <string name="confirm_password_message">Parola ve onay parolası aynı olmalıdır</string>
+    <string name="name">Ad</string>
+    <string name="last_name">Soyadı</string>
+    <string name="please_enter_name">Lütfen adınızı ve soyadınızı girin</string>
+    <string name="log_out">Çıkış</string>
+    <string name="dialog_message">Oturumu sonlandırmak istediğinizden emin misiniz</string>
+    <string name="dialog_title">Oturumu kapat</string>
+    <string name="phone_number">Telefon numarası (ör. +90-999-999-9999)</string>
+    <string name="please_enter_phone_number">Lütfen telefon numaranızı girin</string>
+    <string name="continue_text">Devam et</string>
+    <string name="verify_your_phone_number">Telefon numarası</string>
+    <string name="pesmission_canceled_message">İzin iptal edildi</string>
+    <string name="faqs">SSS</string>
 
     <string name="please_wait">Lütfen Bekleyin</string>
     <string name="bundleKey">ImageUri</string>
@@ -499,8 +525,6 @@
     <string name="lbl_recently_used">Son Kullanılan Özellikler</string>
 
     <!--  FAQs  -->
-    <string name="faqSearch">SSS Ara</string>
-    <string name="log_in_with_google">Log in with Google</string>
     <string-array name="faq_question_answers">
         <item>Resim dosyası formatı olarak hangi formatlar destekleniyor?#####Uygulama şunları destekliyor: jpeg, jpg, tiff, gif, psd, bmp, eps, png, etc.</item>
         <item>Uygulamayı kullanarak yeni bir metin dosyası oluşturabilir miyim?#####Yalnızca mevcut PDF\'lerden metinleri çıkararak yeni bir metin dosyası oluşturabilirsiniz. Metin dosyası oluşturmak için, \n1) Ana sayfadaki <strong>Metin Çıkar</strong> seçeneğine tıkla \n2)  <strong>PDF Dosyası Seçin</strong> butonunu kullanarak PDF\'yi seçin. \n3) Sonra, <strong>Metin Çıkar</strong>\'a tıklayın. \n4) Tamamlandığında, PDF dosyasındaki metinleri içeren bir metin dosyası oluşturulacaktır.</item>

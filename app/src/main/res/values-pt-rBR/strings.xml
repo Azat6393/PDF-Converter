@@ -25,7 +25,33 @@
         <item>Remover senha</item>
         <item>Girar páginas</item>
         <item>Adicione marca d\'água</item>
-    </array>    
+    </array>
+
+    <string name="log_in_with_google">Faça login com o Google</string>
+    <string name="faqSearch">Perguntas frequentes de pesquisa</string>
+    <string name="document">Documento</string>
+    <string name="tool">Ferramenta</string>
+    <string name="profile">Perfil</string>
+    <string name="login_with_facebook">Faça login com o Facebook</string>
+    <string name="sign_in">Fazer login</string>
+    <string name="sign_up">Inscreva-se</string>
+    <string name="enter_your_email_address">Endereço de e-mail</string>
+    <string name="password">Senha</string>
+    <string name="confirm_password">Confirmar senha</string>
+    <string name="please_enter_email">Digite o e-mail</string>
+    <string name="confirm_password_message">Senha e senha de confirmação devem ser iguais</string>
+    <string name="name">Nome</string>
+    <string name="last_name">Sobrenome</string>
+    <string name="please_enter_name">Por favor, insira nome e sobrenome</string>
+    <string name="log_out">Sair</string>
+    <string name="dialog_message">Tem certeza de sair</string>
+    <string name="dialog_title">Cantar</string>
+    <string name="phone_number">Número de telefone (por exemplo, +90-999-999-9999)</string>
+    <string name="please_enter_phone_number">Digite o número de telefone</string>
+    <string name="continue_text">Continuar</string>
+    <string name="verify_your_phone_number">Número de telefone</string>
+    <string name="pesmission_canceled_message">Permissão cancelada</string>
+    <string name="faqs">Perguntas frequentes</string>
  
     <string name="please_wait">Aguarde</string>
     <string name="bundleKey">ImagemUri</string>
@@ -499,8 +525,6 @@
     <string name="lbl_recently_used">Recursos recentemente usados</string>
 
     <!--  FAQs  -->
-    <string name="faqSearch">Procurar no FAQ</string>
-    <string name="log_in_with_google">Log in with Google</string>
     <string-array name="faq_question_answers">
         <item>Quais formatos de arquivo de imagem são suportados?#####O App tem suporte ao jpeg, jpg, tiff, gif, psd, bmp, eps, png, etc.</item>
         <item>Posso criar um novo arquivo de texto usando o App?#####Você só pode criar um novo arquivo de texto ao extrair textos de um PDF existente. Para criar um arquivo de texto, \n1) Clique na opção <strong>Extrait texto</strong> na tela inicial. \n2) Selecione o PDF usando o botão <strong>SELECIONE ARQUIVO PDF</strong>. \n3) Em seguida, clique em <strong>EXTRAIR TEXTO</strong>. \n4) Uma vez feito, será criado um arquivo de texto com os textos do arquivo PDF.</item>

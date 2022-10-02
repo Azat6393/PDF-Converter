@@ -28,6 +28,31 @@
         <item>Dodaj Vodeni Žig</item>
     </array>
 
+    <string name="log_in_with_google">Prijavite se na Google</string>
+    <string name="faqSearch">Česta pitanja o pretraživanju</string>
+    <string name="document">Dokument</string>
+    <string name="tool">Alat</string>
+    <string name="profile">Profil</string>
+    <string name="login_with_facebook">Prijavite se na Facebook</string>
+    <string name="sign_in">Prijava</string>
+    <string name="sign_up">Prijavite se</string>
+    <string name="enter_your_email_address">Adresa e-pošte ili broj telefona</string>
+    <string name="password">Lozinka</string>
+    <string name="confirm_password">Potvrdite lozinku</string>
+    <string name="please_enter_email">Molimo unesite email</string>
+    <string name="confirm_password_message">Lozinka i potvrdna lozinka trebaju biti iste</string>
+    <string name="name">Ime</string>
+    <string name="last_name">Prezime</string>
+    <string name="please_enter_name">Molimo unesite ime i prezime</string>
+    <string name="log_out">Odjava</string>
+    <string name="dialog_message">Jeste li sigurni da ste se odjavili</string>
+    <string name="dialog_title">Pjevajte</string>
+    <string name="phone_number">Broj telefona (npr. +90-999-999-9999)</string>
+    <string name="please_enter_phone_number">Molimo unesite broj telefona</string>
+    <string name="continue_text">Nastavi</string>
+    <string name="verify_your_phone_number">Broj telefona</string>
+    <string name="pesmission_canceled_message">Dozvola je otkazana</string>
+
     <array name="itemIds" translatable="false">
         <item>open</item>
         <item>delete</item>
@@ -542,7 +567,6 @@
     <string name="delete_alert_singular">Da li želite izbrisati odabrane datoteke?</string>
     <string name="snackbar_files_deleted">Datoteke Izbrisane</string>
     <string name="lbl_recently_used">Nedavno Korištene Funkcije</string>
-    <string name="log_in_with_google">Log in with Google</string>
 
     <!--  FAQs  -->
   <string-array name="faq_question_answers">

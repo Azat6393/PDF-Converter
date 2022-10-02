@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "174832374276-l8husdeiut7ittsofb4c6cjgt7tcnsvn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "woynapp.wsann",
+            "certificate_hash": "6b7d6d030fc5cbdec43bd91d6093b80697c5331d"
+          }
+        },
+        {
           "client_id": "174832374276-2vl6jtt609svdooqv4ke13oebo3teumu.apps.googleusercontent.com",
           "client_type": 3
         }

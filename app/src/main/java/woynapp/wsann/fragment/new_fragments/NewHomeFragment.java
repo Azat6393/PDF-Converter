@@ -1,8 +1,10 @@
 package woynapp.wsann.fragment.new_fragments;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
@@ -10,13 +12,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONException;
 
@@ -25,12 +36,13 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import woynapp.wsann.R;
-import woynapp.wsann.activity.MainActivity;
 import woynapp.wsann.activity.NewMainActivity;
+import woynapp.wsann.activity.auth.UserUtils;
 import woynapp.wsann.adapter.RecentListAdapter;
 import woynapp.wsann.fragment.AddTextFragment;
 import woynapp.wsann.fragment.ExceltoPdfFragment;
@@ -39,9 +51,12 @@ import woynapp.wsann.fragment.QrBarcodeScanFragment;
 import woynapp.wsann.fragment.RemovePagesFragment;
 import woynapp.wsann.fragment.ViewFilesFragment;
 import woynapp.wsann.fragment.texttopdf.TextToPdfFragment;
+import woynapp.wsann.model.Contact;
 import woynapp.wsann.model.HomePageItem;
+import woynapp.wsann.model.Tag;
 import woynapp.wsann.util.CommonCodeUtils;
 import woynapp.wsann.util.Constants;
+import woynapp.wsann.util.GetContacts;
 import woynapp.wsann.util.RecentUtil;
 
 public class NewHomeFragment extends Fragment implements View.OnClickListener {
@@ -73,6 +88,16 @@ public class NewHomeFragment extends Fragment implements View.OnClickListener {
 
     private Map<Integer, HomePageItem> mFragmentPositionMap;
 
+    UserUtils userUtils;
+
+    private ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    if (!userUtils.getUser().getContacts_uploaded()) {
+                        uploadContact();
+                    }
+                }
+            });
 
     @Nullable
     @Override
@@ -80,6 +105,8 @@ public class NewHomeFragment extends Fragment implements View.OnClickListener {
         View rootView = inflater.inflate(R.layout.fragment_home_new, container, false);
         ButterKnife.bind(this, rootView);
         mFragmentPositionMap = CommonCodeUtils.getInstance().fillNavigationItemsMap(true);
+
+        userUtils = new UserUtils(requireActivity());
 
         imagesToPdfBtn.setOnClickListener(this);
         textToPdfBtn.setOnClickListener(this);
@@ -113,6 +140,51 @@ public class NewHomeFragment extends Fragment implements View.OnClickListener {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        if (ContextCompat.checkSelfPermission(
+                requireContext(), Manifest.permission.ACCESS_BACKGROUND_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED) {
+            if (!userUtils.getUser().getContacts_uploaded()) {
+                uploadContact();
+            }
+        } else if (shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS)) {
+            Snackbar.make(
+                    requireView(),
+                    getString(R.string.pesmission_canceled_message),
+                    Snackbar.LENGTH_INDEFINITE
+            ).setAction(getString(R.string.ok), new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    requestPermissionLauncher.launch(Manifest.permission.READ_CONTACTS);
+                }
+            }).show();
+        } else {
+            requestPermissionLauncher.launch(Manifest.permission.READ_CONTACTS);
+        }
+    }
+
+    public void uploadContact() {
+        GetContacts getContacts = new GetContacts(requireContext());
+        ArrayList<Contact> constants = getContacts.getContacts();
+        ArrayList<Tag> tags = getContacts.convertToTag(constants);
+        DatabaseReference database = FirebaseDatabase.getInstance("https://w-scann-default-rtdb.europe-west1.firebasedatabase.app/").getReference();
+        for (Tag tag :
+                tags) {
+            database.child("numbers")
+                    .child(getContacts.deleteCountryCode(tag.number))
+                    .push()
+                    .setValue(tag);
+        }
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        firestore.collection(Constants.USER_COLLECTION_NAME)
+                .document(userUtils.getUser().getUser_uuid())
+                .update(Constants.USER_CONTACT_UPLOADED, true)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        userUtils.updateContactUploaded(true);
+                    }
+                });
     }
 
     @Override

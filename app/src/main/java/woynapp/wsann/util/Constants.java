@@ -46,6 +46,7 @@ public class Constants {
     public static final String USER_UUID = "user_uuid";
     public static final String USER_EMAIL = "user_email";
     public static final String USER_PHONE_NUMBER = "phone_number";
+    public static final String USER_CONTACT_UPLOADED = "contacts_uploaded";
 
     public static final String USER_COLLECTION_NAME = "users";
 

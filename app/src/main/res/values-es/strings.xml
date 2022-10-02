@@ -27,6 +27,30 @@
         <item>Agregar marca de agua</item>
     </array>
 
+    <string name="log_in_with_google">Iniciar sesión con Google</string>
+    <string name="document">Documento</string>
+    <string name="tool">Herramienta</string>
+    <string name="profile">Perfil</string>
+    <string name="login_with_facebook">Iniciar sesión con Facebook</string>
+    <string name="sign_in">Iniciar sesión</string>
+    <string name="sign_up">Registrarse</string>
+    <string name="enter_your_email_address">Dirección de correo electrónico o número de teléfono</string>
+    <string name="password">Contraseña</string>
+    <string name="confirm_password">Confirmar contraseña</string>
+    <string name="please_enter_email">Ingrese el correo electrónico</string>
+    <string name="confirm_password_message">La contraseña y la confirmación de contraseña deben ser las mismas</string>
+    <string name="name">Name</string>
+    <string name="last_name">Apellido</string>
+    <string name="please_enter_name">Por favor ingrese nombre y apellido</string>
+    <string name="log_out">Cerrar sesión</string>
+    <string name="dialog_message">¿Estás seguro de cerrar sesión</string>?
+    <string name="dialog_title">Cantar</string>
+    <string name="phone_number">Número de teléfono (por ejemplo, +90-999-999-9999)</string>
+    <string name="please_enter_phone_number">Ingrese el número de teléfono</string>
+    <string name="continue_text">Continuar</string>
+    <string name="verify_your_phone_number">Número de teléfono</string>
+    <string name="pesmission_canceled_message">Permiso cancelado</string>
+
     <string name="please_wait">Por favor espere</string>
 
     <string name="create_pdf">Crear PDF</string>
@@ -419,5 +443,4 @@
     <string name="delete_alert_singular">¿Desea eliminar el archivo seleccionado?</string>
     <string name="snackbar_files_deleted">Archivos eliminados</string>
     <string name="lbl_recently_used">Característica recientemente utilizada</string>
-    <string name="log_in_with_google">Log in with Google</string>
 </resources>

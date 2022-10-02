@@ -27,6 +27,32 @@
         <item> Aggiungi filigrana </item>
     </array>
 
+    <string name="log_in_with_google">Accedi con Google</string>
+    <string name="faqSearch">Domande frequenti sulla ricerca</string>
+    <string name="document">Documento</string>
+    <string name="tool">Strumento</string>
+    <string name="profile">Profilo</string>
+    <string name="login_with_facebook">Accedi con Facebook</string>
+    <string name="sign_in">Accedi</string>
+    <string name="sign_up">Registrati</string>
+    <string name="enter_your_email_address">Indirizzo email o numero di telefono</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Conferma password</string>
+    <string name="please_enter_email">Inserisci l e-mail</string>
+    <string name="confirm_password_message">La password e la password di conferma devono essere uguali</string>
+    <string name="name">Nome</string>
+    <string name="last_name">Cognome</string>
+    <string name="please_enter_name">Inserisci nome e cognome</string>
+    <string name="log_out">Esci</string>
+    <string name="dialog_message">Sei sicuro di uscire</string>
+    <string name="dialog_title">Canta</string>
+    <string name="phone_number">Numero di telefono (es. +90-999-999-9999)</string>
+    <string name="please_enter_phone_number">Inserisci il numero di telefono</string>
+    <string name="continue_text">Continua</string>
+    <string name="verify_your_phone_number">Numero di telefono</string>
+    <string name="pesmission_canceled_message">Autorizzazione annullata</string>
+    <string name="faqs">Domande frequenti</string>
+
     <array name="itemIds" translatable="false">
         <item> apri </item>
         <item> elimina </item>
@@ -559,8 +585,6 @@
     <string name = "lbl_recently_used"> Funzioni utilizzate di recente </string>
 
     <!--  FAQs  -->
-    <string name = "faqSearch"> Domande frequenti sulla ricerca </string>
-    <string name="log_in_with_google">Log in with Google</string>
     <string-array name="faq_question_answers">
         <item> Quali formati di file immagine sono supportati? ##### L\'app supporta jpeg, jpg, tiff, gif, psd, bmp, eps, png, ecc. </item>
         <item> Posso creare un nuovo file di testo utilizzando l\'app? ##### Puoi creare un nuovo file di testo solo estraendo il testo da un PDF esistente. Per creare un file di testo, \ n1) Fai clic sull\'opzione <strong> Estrai testo </strong> nella home page. \ n2) Seleziona il PDF utilizzando il pulsante <strong> SELEZIONA FILE PDF </strong>. \ n3) Quindi, fai clic su <strong> ESTRATTA TESTO </strong>. \ n4) Una volta terminato, verrà creato un file di testo con i testi del file PDF. </item>

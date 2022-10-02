@@ -109,13 +109,14 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
         user.put(Constants.USER_UUID, uuid);
         user.put(Constants.USER_EMAIL, email);
         user.put(Constants.USER_PHONE_NUMBER, phoneNumber);
+        user.put(Constants.USER_CONTACT_UPLOADED, false);
         db.collection(Constants.USER_COLLECTION_NAME)
                 .document(uuid)
                 .set(user)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
-                        userUtils.updateUser(name, surname, photoUrl, uuid, email, phoneNumber);
+                        userUtils.updateUser(name, surname, photoUrl, uuid, email, phoneNumber, false);
                         isLoading(false);
                         Intent intent = new Intent(requireActivity(), NewMainActivity.class);
                         requireActivity().startActivity(intent);

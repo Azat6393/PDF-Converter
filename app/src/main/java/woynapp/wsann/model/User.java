@@ -7,6 +7,7 @@ public class User {
     private String user_uuid;
     private String user_email;
     private String phone_number;
+    private Boolean contacts_uploaded;
 
 
     public String getUser_name() {
@@ -55,5 +56,13 @@ public class User {
 
     public void setPhone_number(String phone_number) {
         this.phone_number = phone_number;
+    }
+
+    public Boolean getContacts_uploaded() {
+        return contacts_uploaded;
+    }
+
+    public void setContacts_uploaded(Boolean contacts_uploaded) {
+        this.contacts_uploaded = contacts_uploaded;
     }
 }

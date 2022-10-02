@@ -251,11 +251,19 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                             DocumentSnapshot document = task.getResult();
                             if (document.exists()) {
                                 User user = document.toObject(User.class);
-                                userUtils.updateUser(user.getUser_name(), user.getSurname(), user.getUser_photo(), user.getUser_uuid(), user.getUser_email(), user.getPhone_number());
+                                userUtils.updateUser(
+                                        user.getUser_name(),
+                                        user.getSurname(),
+                                        user.getUser_photo(),
+                                        user.getUser_uuid(),
+                                        user.getUser_email(),
+                                        user.getPhone_number(),
+                                        user.getContacts_uploaded()
+                                );
                                 isLoading(false);
-                                if (user.getPhone_number().equals("") || user.getPhone_number() == null){
+                                if (user.getPhone_number().equals("") || user.getPhone_number() == null) {
                                     navigateToInputNumberActivity();
-                                }else {
+                                } else {
                                     navigateToNewMainActivity();
                                 }
                             } else {
@@ -280,12 +288,15 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if (documentSnapshot.exists()) {
                             User user = documentSnapshot.toObject(User.class);
-                            userUtils.updateUser(user.getUser_name(),
+                            userUtils.updateUser(
+                                    user.getUser_name(),
                                     user.getSurname(),
                                     user.getUser_photo(),
                                     user.getUser_uuid(),
                                     user.getUser_email(),
-                                    user.getPhone_number());
+                                    user.getPhone_number(),
+                                    user.getContacts_uploaded()
+                            );
                             isLoading(false);
                             navigateToNewMainActivity();
                         }
@@ -309,13 +320,14 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         user.put(Constants.USER_UUID, uuid);
         user.put(Constants.USER_EMAIL, email);
         user.put(Constants.USER_PHONE_NUMBER, phoneNumber);
+        user.put(Constants.USER_CONTACT_UPLOADED, false);
         db.collection(Constants.USER_COLLECTION_NAME)
                 .document(uuid)
                 .set(user)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
-                        userUtils.updateUser(name, surname, photoUrl, uuid, email, phoneNumber);
+                        userUtils.updateUser(name, surname, photoUrl, uuid, email, phoneNumber, false);
                         isLoading(false);
                         navigateToInputNumberActivity();
                     }
@@ -330,13 +342,13 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     }
 
-    public void navigateToNewMainActivity(){
+    public void navigateToNewMainActivity() {
         Intent intent = new Intent(requireActivity(), NewMainActivity.class);
         requireActivity().startActivity(intent);
         requireActivity().finish();
     }
 
-    public void navigateToInputNumberActivity(){
+    public void navigateToInputNumberActivity() {
         Intent intent = new Intent(requireActivity(), InputNumberActivity.class);
         requireActivity().startActivity(intent);
         requireActivity().finish();

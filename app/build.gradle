@@ -91,6 +91,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
     implementation 'com.google.firebase:firebase-auth:19.2.0'
     implementation 'com.google.firebase:firebase-firestore:21.4.0'
+    implementation 'com.google.firebase:firebase-database:20.0.4'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
 
     // persistence room library - for db operations
@@ -149,6 +150,10 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:20.3.0'
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.google.firebase:firebase-storage:20.0.2'
+    implementation 'com.google.firebase:firebase-database'
+
+
+    implementation 'com.googlecode.libphonenumber:libphonenumber:8.7.0'
 
 }
 

@@ -99,8 +99,14 @@
                     android:layout_marginTop="5dp"
                     android:text="@string/images_to_pdf"
                     android:textAlignment="center"
+                    android:maxLines="1"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginStart="10dp"
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="8sp"
+                    android:autoSizeMaxTextSize="100sp"
                     android:textColor="?attr/secondary"
-                    android:textSize="12sp" />
+                    tools:targetApi="o" />
 
             </LinearLayout>
 
@@ -134,8 +140,14 @@
                     android:layout_marginTop="5dp"
                     android:text="@string/text_to_pdf"
                     android:textAlignment="center"
+                    android:maxLines="1"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginStart="10dp"
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="8sp"
+                    android:autoSizeMaxTextSize="100sp"
                     android:textColor="?attr/secondary"
-                    android:textSize="12sp" />
+                    tools:targetApi="o" />
 
             </LinearLayout>
 
@@ -169,8 +181,14 @@
                     android:layout_marginTop="5dp"
                     android:text="@string/qr_barcode_pdf"
                     android:textAlignment="center"
+                    android:maxLines="1"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginStart="10dp"
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="8sp"
+                    android:autoSizeMaxTextSize="100sp"
                     android:textColor="?attr/secondary"
-                    android:textSize="12sp" />
+                    tools:targetApi="o" />
 
             </LinearLayout>
 
@@ -203,8 +221,14 @@
                     android:layout_marginTop="5dp"
                     android:text="@string/excel_to_pdf"
                     android:textAlignment="center"
+                    android:maxLines="1"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginStart="10dp"
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="8sp"
+                    android:autoSizeMaxTextSize="100sp"
                     android:textColor="?attr/secondary"
-                    android:textSize="12sp" />
+                    tools:targetApi="o" />
             </LinearLayout>
         </LinearLayout>
 
@@ -246,8 +270,14 @@
                     android:layout_marginTop="5dp"
                     android:text="@string/add_watermark"
                     android:textAlignment="center"
+                    android:maxLines="1"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginStart="10dp"
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="8sp"
+                    android:autoSizeMaxTextSize="100sp"
                     android:textColor="?attr/secondary"
-                    android:textSize="12sp" />
+                    tools:targetApi="o" />
 
             </LinearLayout>
 
@@ -281,9 +311,14 @@
                     android:layout_marginTop="5dp"
                     android:text="@string/add_password"
                     android:textAlignment="center"
+                    android:maxLines="1"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginStart="10dp"
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="8sp"
+                    android:autoSizeMaxTextSize="100sp"
                     android:textColor="?attr/secondary"
-                    android:textSize="12sp" />
-
+                    tools:targetApi="o" />
             </LinearLayout>
 
             <LinearLayout
@@ -316,9 +351,14 @@
                     android:layout_marginTop="5dp"
                     android:text="@string/remove_password"
                     android:textAlignment="center"
+                    android:maxLines="1"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginStart="10dp"
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="8sp"
+                    android:autoSizeMaxTextSize="100sp"
                     android:textColor="?attr/secondary"
-                    android:textSize="12sp" />
-
+                    tools:targetApi="o" />
             </LinearLayout>
 
             <LinearLayout
@@ -352,8 +392,14 @@
                     android:layout_marginTop="5dp"
                     android:text="@string/add_text"
                     android:textAlignment="center"
+                    android:maxLines="1"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginStart="10dp"
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="8sp"
+                    android:autoSizeMaxTextSize="100sp"
                     android:textColor="?attr/secondary"
-                    android:textSize="12sp" />
+                    tools:targetApi="o" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

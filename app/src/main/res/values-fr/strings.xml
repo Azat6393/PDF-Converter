@@ -27,6 +27,31 @@
         <item>Faire pivoter les pages</item>
         <item>Ajouter une filigrane</item>
     </array>
+
+    <string name="log_in_with_google">Se connecter avec Google</string>
+    <string name="document">Document</string>
+    <string name="tool">Outil</string>
+    <string name="profile">Profil</string>
+    <string name="login_with_facebook">Se connecter avec Facebook</string>
+    <string name="sign_in">Se connecter</string>
+    <string name="sign_up">S inscrire</string>
+    <string name="enter_your_email_address">Adresse e-mail ou numéro de téléphone</string>
+    <string name="password">Mot de passe</string>
+    <string name="confirm_password">Confirmer le mot de passe</string>
+    <string name="please_enter_email">Veuillez saisir votre adresse e-mail</string>
+    <string name="confirm_password_message">Le mot de passe et le mot de passe de confirmation doivent être identiques</string>
+    <string name="name">Nom</string>
+    <string name="last_name">Nom de famille</string>
+    <string name="please_enter_name">Veuillez entrer le nom et le prénom</string>
+    <string name="log_out">Se déconnecter</string>
+    <string name="dialog_message">Êtes-vous sûr de vous déconnecter</string>
+    <string name="dialog_title">Chantez</string>
+    <string name="phone_number">Numéro de téléphone (par exemple +90-999-999-9999)</string>
+    <string name="please_enter_phone_number">Veuillez entrer le numéro de téléphone</string>
+    <string name="continue_text">Continuer</string>
+    <string name="verify_your_phone_number">Numéro de téléphone</string>
+    <string name="pesmission_canceled_message">Autorisation annulée</string>
+
     <string name="please_wait">Veuillez patienter</string>
     <string name="create_pdf">Accueil</string>
     <string name="viewFiles">Voir les fichiers</string>
@@ -177,7 +202,6 @@
     <string name="snackbar_undoAction">Annuler</string>
     <string name="pdf_does_not_exist_message">Le PDF n\'existe pas.</string>
     <string name="image_rearranging_options">Option de réarrangement des images</string>
-    <string name="filter_file_name">%s_%s.jpg</string>
     <string name="reset">Réinitialiser</string>
     <string name="confirm_exit_message">Appuyez à nouveau pour quitter</string>
     <string name="border">Ajouter une bordure d\'image</string>
@@ -332,9 +356,7 @@
     <string name="error_page_range">Entrée de plage invalide</string>
     <string name="error_invalid_input">Entrée non valide</string>
     <string name="file_access_error">Impossible d’accéder au PDF. Les fichiers sont soit chiffrés ou situés dans le stockage externe.</string>
-    <string name="compress_info">Félicitations ! Votre PDF est compressé : 
-\nTaille originale du PDF : %s 
-\nTaille du PDF compressé : %s</string>
+
     <string name="invert_pdf">Inverser le PDF</string>
     <string name="invert_pdf_info">Toutes les couleurs dans le fichier PDF seront inversées</string>
     <string name="invert_pdf_title">Inverser un PDF</string>
@@ -409,5 +431,4 @@
     <string name="lbl_recently_used">Fonction récemment utilisée</string>
     <!--text to pdf-->
     <string name="error_pdf_not_created">Désolé, le pdf n\'a pas été créé. Veuillez réessayer.</string>
-    <string name="log_in_with_google">Log in with Google</string>
 </resources>

@@ -142,11 +142,13 @@ public class SettingsFragment extends Fragment implements OnItemClickListener, V
 
         user = userUtils.getUser();
         userNameTv.setText(user.getUser_name() + " " + user.getSurname());
-        Picasso.with(requireContext())
-                .load(user.getUser_photo())
-                .placeholder(R.drawable.avatar_icon)
-                .error(R.drawable.avatar_icon)
-                .into(profilePhoto);
+        if (!user.getUser_photo().equals("") && user.getUser_photo() != null){
+            Picasso.with(requireContext())
+                    .load(user.getUser_photo())
+                    .placeholder(R.drawable.avatar_icon)
+                    .error(R.drawable.avatar_icon)
+                    .into(profilePhoto);
+        }
 
         mAuth = FirebaseAuth.getInstance();
         logOutBtn.setOnClickListener(this);

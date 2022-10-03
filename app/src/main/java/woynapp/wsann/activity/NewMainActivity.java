@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -34,9 +35,15 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.multidex.BuildConfig;
 
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -82,6 +89,11 @@ public class NewMainActivity extends AppCompatActivity implements NavigationView
 
     private boolean mIsButtonAlreadyClicked = false;
 
+    @Override
+    public void recreate() {
+        super.recreate();
+        bottomNavigationView.setSelectedItemId(R.id.homeFragment);
+    }
 
     @SuppressLint("NonConstantResourceId")
     @Override
@@ -112,6 +124,8 @@ public class NewMainActivity extends AppCompatActivity implements NavigationView
             }
         });
 
+        loadInterstitialAd();
+
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setBackground(null);
         bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -132,11 +146,6 @@ public class NewMainActivity extends AppCompatActivity implements NavigationView
             return true;
         });
 
-        MobileAds.initialize(this, new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {
-            }
-        });
         setThemeOnActivityExclusiveComponents();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -174,12 +183,65 @@ public class NewMainActivity extends AppCompatActivity implements NavigationView
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
 
+    public void loadInterstitialAd() {
+
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {}
+        });
+
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        InterstitialAd.load(this,"ca-app-pub-8594335878312175/6601194411", adRequest,
+
+
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+
+                        interstitialAd.show(NewMainActivity.this);
+                        interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                            @Override
+                            public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                                super.onAdFailedToShowFullScreenContent(adError);
+                            }
+
+                            @Override
+                            public void onAdShowedFullScreenContent() {
+                                super.onAdShowedFullScreenContent();
+                            }
+
+                            @Override
+                            public void onAdDismissedFullScreenContent() {
+                                super.onAdDismissedFullScreenContent();
+                            }
+
+                            @Override
+                            public void onAdImpression() {
+                                super.onAdImpression();
+                            }
+
+                            @Override
+                            public void onAdClicked() {
+                                super.onAdClicked();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                    }
+                });
+    }
+
+
     private void getRuntimePermissions() {
         if (Build.VERSION.SDK_INT < 29) {
             PermissionsUtils.getInstance().requestRuntimePermissions(this,
                     Constants.WRITE_PERMISSIONS,
                     Constants.REQUEST_CODE_FOR_WRITE_PERMISSION);
-        } else if (Build.VERSION.SDK_INT >= 29) {
+        } else {
             PermissionsUtils.getInstance().requestRuntimePermissions(this,
                     Constants.READ_PERMISSIONS,
                     Constants.REQUEST_CODE_FOR_READ_PERMISSION);
@@ -212,6 +274,7 @@ public class NewMainActivity extends AppCompatActivity implements NavigationView
             mSharedPreferences.edit().putString(Constants.VERSION_NAME, BuildConfig.VERSION_NAME).apply();
         }
     }
+
 
     @Override
     protected void onDestroy() {
@@ -332,10 +395,13 @@ public class NewMainActivity extends AppCompatActivity implements NavigationView
 
     private boolean isStoragePermissionGranted() {
         if (Build.VERSION.SDK_INT >= 23 && Build.VERSION.SDK_INT < 29) {
-            return ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
-        } else {
+            return ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
+        } else if (Build.VERSION.SDK_INT >= 29) {
+            return ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
+        } else
             return true;
-        }
     }
 
     public void convertImagesToPdf(ArrayList<Uri> imageUris) {

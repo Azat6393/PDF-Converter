@@ -73,14 +73,14 @@ public class RecentUtil {
 
         LinkedHashMap<String, Map<String, String>> recentList = getList(preferences);
 
-      /*  //remove the first item from the recent list.
-        if (recentList.size() == 3) {
+        //remove the first item from the recent list.
+        if (recentList.size() == 15) {
             //now if the list contains the particular key
             if (recentList.remove(String.valueOf(resId)) == null) {
                 //bucket is full.
                 recentList.remove(recentList.keySet().iterator().next()); //removes the first.
             }
-        }*/
+        }
 
         recentList.put(String.valueOf(resId), itemClicked);
 

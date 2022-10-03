@@ -390,8 +390,7 @@ public class NewMainActivity extends AppCompatActivity implements NavigationView
         RelativeLayout toolbarBackgroundLayout = findViewById(R.id.toolbar_background_layout);
         CardView content = findViewById(R.id.content);
         SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String themeName = mSharedPreferences.getString(Constants.DEFAULT_THEME_TEXT,
-                Constants.DEFAULT_THEME);
+        String themeName = mSharedPreferences.getString(Constants.DEFAULT_THEME_TEXT, Constants.DEFAULT_THEME);
         switch (themeName) {
             case Constants.THEME_WHITE:
                 toolbarBackgroundLayout.setBackgroundResource(R.drawable.toolbar_bg);

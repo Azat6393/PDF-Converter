@@ -28,8 +28,7 @@ public class ThemeUtils {
      */
     public void setThemeApp(Context context) {
         SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String themeName = mSharedPreferences.getString(Constants.DEFAULT_THEME_TEXT,
-                Constants.DEFAULT_THEME);
+        String themeName = mSharedPreferences.getString(Constants.DEFAULT_THEME_TEXT, Constants.DEFAULT_THEME);
         if (themeName == null)
             return;
         switch (themeName) {

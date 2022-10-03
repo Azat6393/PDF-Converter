@@ -63,12 +63,16 @@
                             android:textColor="?attr/primary_color"
                             android:layout_gravity="center"
                             android:layout_margin="5dp"
-                            android:textSize="10sp"
+                            android:maxLines="1"
+                            android:autoSizeTextType="uniform"
+                            android:autoSizeMinTextSize="8sp"
+                            android:autoSizeMaxTextSize="100sp"
                             android:visibility="gone"
                             app:layout_constraintBottom_toBottomOf="@+id/back_btn"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="@+id/back_btn"
-                            app:strokeColor="?attr/primary_color" />
+                            app:strokeColor="?attr/primary_color"
+                            tools:ignore="UnusedAttribute" />
 
                         <ImageView
                             android:id="@+id/edit_btn"

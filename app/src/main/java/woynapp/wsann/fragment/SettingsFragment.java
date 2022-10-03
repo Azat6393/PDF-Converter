@@ -1,5 +1,10 @@
 package woynapp.wsann.fragment;
 
+import static woynapp.wsann.util.Constants.THEME_BLACK;
+import static woynapp.wsann.util.Constants.THEME_DARK;
+import static woynapp.wsann.util.Constants.THEME_SYSTEM;
+import static woynapp.wsann.util.Constants.THEME_WHITE;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -342,7 +347,20 @@ public class SettingsFragment extends Fragment implements OnItemClickListener, V
                     int selectedId = radioGroup.getCheckedRadioButtonId();
                     RadioButton radioButton = view.findViewById(selectedId);
                     String themeName = radioButton.getText().toString();
-                    ThemeUtils.getInstance().saveTheme(mActivity, themeName);
+                    switch (selectedId) {
+                        case R.id.theme_system:
+                            ThemeUtils.getInstance().saveTheme(mActivity, THEME_SYSTEM);
+                            break;
+                        case R.id.theme_black:
+                            ThemeUtils.getInstance().saveTheme(mActivity, THEME_BLACK);
+                            break;
+                        case R.id.theme_dark:
+                            ThemeUtils.getInstance().saveTheme(mActivity, THEME_DARK);
+                            break;
+                        case R.id.theme_white:
+                            ThemeUtils.getInstance().saveTheme(mActivity, THEME_WHITE);
+                            break;
+                    }
                     mActivity.recreate();
                 }))
                 .build();

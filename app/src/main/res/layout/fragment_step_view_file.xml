@@ -8,9 +8,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/tv_title"
-        android:layout_margin="48dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="48dp"
+        android:layout_marginBottom="48dp"
         android:scaleType="centerInside"
-        android:src="@drawable/view_pdf" />
+        android:src="@drawable/mockup_five" />
 
     <TextView
         android:id="@+id/tv_title"

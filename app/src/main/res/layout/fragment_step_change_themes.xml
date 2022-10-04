@@ -7,9 +7,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/tv_title"
-        android:layout_margin="@dimen/standard_margin"
+        android:layout_marginStart="@dimen/standard_margin"
+        android:layout_marginTop="@dimen/standard_margin"
+        android:layout_marginEnd="@dimen/standard_margin"
+        android:layout_marginBottom="@dimen/standard_margin"
         android:scaleType="centerInside"
-        android:src="@drawable/group" />
+        android:src="@drawable/mockup_one" />
 
     <TextView
         android:id="@+id/tv_title"
@@ -42,6 +45,7 @@
         android:layout_marginTop="24dp"
         android:layout_marginLeft="24dp"
         android:layout_marginRight="24dp"
+        android:backgroundTint="?attr/primary_color"
         android:maxWidth="30dp"
         android:padding="3dip"
         style="@style/MorphingButton"

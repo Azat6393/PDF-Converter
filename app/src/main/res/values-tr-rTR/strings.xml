@@ -469,7 +469,7 @@
     <string name="welcome_extract_images">PDF\'den Görüntü çıkarma</string>
     <string name="welcome_extract_images_message">Bir harekette PDF\'lerinizden olası tüm görüntüleri çıkarın</string>
     <string name="welcome_themes_title">Farklı temalar</string>
-    <string name="welcome_themes_message">Ayarlar\'a gidin ve üç tür tema arasından seçim yapabilirsiniz: Siyah, Koyu, Beyaz</string>
+    <string name="welcome_themes_message">Ayarlar\'a gidin ve iki tür tema arasından seçim yapabilirsiniz: Koyu, Beyaz</string>
     <string name="welcome_excel_message">Excel dosyalarınızı kolaylıkla en çok istediğiniz PDF\'lere dönüştürün</string>
     <string name="skip_text">Geç</string>
     <string name="get_started_title">Haydi başlayalım!</string>

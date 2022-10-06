@@ -137,6 +137,8 @@ dependencies {
     // color picker
     implementation 'com.github.danielnilsson9:color-picker-view:1.4.0@aar'
 
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.+'
+
 
     testImplementation 'org.mockito:mockito-core:2.23.4'
     testImplementation 'org.robolectric:robolectric:4.3.1'

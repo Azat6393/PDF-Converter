@@ -72,15 +72,15 @@ public class MainActivity extends AppCompatActivity
         ThemeUtils.getInstance().setThemeApp(this);
         super.onCreate(savedInstanceState);
 
-        loadInterstitialAd();
+        //loadInterstitialAd();
 
         setContentView(R.layout.activity_main);
 
-        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+      /*  MobileAds.initialize(this, new OnInitializationCompleteListener() {
             @Override
             public void onInitializationComplete(InitializationStatus initializationStatus) {
             }
-        });
+        });*/
 
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();

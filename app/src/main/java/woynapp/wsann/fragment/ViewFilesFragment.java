@@ -521,6 +521,7 @@ public class ViewFilesFragment extends Fragment
                     mActivity.findViewById(R.id.fab).setVisibility(View.GONE);
                     mActivity.findViewById(R.id.toolbar_background_layout).setVisibility(View.GONE);
                     mActivity.findViewById(R.id.coordinatorLayout).setVisibility(View.GONE);
+                    mActivity.findViewById(R.id.kargo_bul_banner).setVisibility(View.VISIBLE);
                     break;
                 default:
                     mActivity.findViewById(R.id.fab).setVisibility(View.VISIBLE);
@@ -538,5 +539,6 @@ public class ViewFilesFragment extends Fragment
         super.onStop();
         mActivity.findViewById(R.id.fab).setVisibility(View.VISIBLE);
         mActivity.findViewById(R.id.coordinatorLayout).setVisibility(View.VISIBLE);
+        mActivity.findViewById(R.id.kargo_bul_banner).setVisibility(View.INVISIBLE);
     }
 }

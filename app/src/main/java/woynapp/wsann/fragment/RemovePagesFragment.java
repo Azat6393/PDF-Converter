@@ -363,6 +363,7 @@ public class RemovePagesFragment extends Fragment implements MergeFilesAdapter.O
         super.onStart();
         mActivity.findViewById(R.id.fab).setVisibility(View.GONE);
         mActivity.findViewById(R.id.coordinatorLayout).setVisibility(View.GONE);
+        mActivity.findViewById(R.id.kargo_bul_banner).setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -370,5 +371,6 @@ public class RemovePagesFragment extends Fragment implements MergeFilesAdapter.O
         super.onStop();
         mActivity.findViewById(R.id.fab).setVisibility(View.VISIBLE);
         mActivity.findViewById(R.id.coordinatorLayout).setVisibility(View.VISIBLE);
+        mActivity.findViewById(R.id.kargo_bul_banner).setVisibility(View.INVISIBLE);
     }
 }

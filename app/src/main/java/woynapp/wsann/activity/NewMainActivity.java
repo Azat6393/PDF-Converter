@@ -17,11 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -35,23 +31,14 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.multidex.BuildConfig;
 
-import com.google.android.gms.ads.AdError;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.FullScreenContentCallback;
-import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
-import com.google.android.gms.ads.interstitial.InterstitialAd;
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import com.squareup.picasso.Picasso;
 import com.zhihu.matisse.Matisse;
 
 import java.util.ArrayList;
 
+import pl.droidsonroids.gif.GifImageView;
 import woynapp.wsann.R;
 import woynapp.wsann.fragment.ImageToPdfFragment;
 import woynapp.wsann.fragment.SettingsFragment;
@@ -64,7 +51,6 @@ import woynapp.wsann.util.DirectoryUtils;
 import woynapp.wsann.util.FeedbackUtils;
 import woynapp.wsann.util.ImageUtils;
 import woynapp.wsann.util.PermissionsUtils;
-import woynapp.wsann.util.StringUtils;
 import woynapp.wsann.util.ThemeUtils;
 import woynapp.wsann.util.WhatsNewUtils;
 
@@ -106,9 +92,18 @@ public class NewMainActivity extends AppCompatActivity implements NavigationView
         newDocumentFragment = new ViewFilesFragment();
         newToolFragment = new NewToolFragment();
         newProfileFragment = new SettingsFragment();
+        GifImageView gifImageView = findViewById(R.id.kargo_bul_banner);
 
         mNavigationView = findViewById(R.id.nav_view);
         fab = findViewById(R.id.fab);
+
+        gifImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(NewMainActivity.this, WebViewActivity.class);
+                startActivity(intent);
+            }
+        });
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,8 +118,6 @@ public class NewMainActivity extends AppCompatActivity implements NavigationView
                 }
             }
         });
-
-        loadInterstitialAd();
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setBackground(null);
@@ -181,58 +174,6 @@ public class NewMainActivity extends AppCompatActivity implements NavigationView
         setCurrentFragment(newHomeFragment);
 
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-    }
-
-    public void loadInterstitialAd() {
-
-        MobileAds.initialize(this, new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {}
-        });
-
-
-        AdRequest adRequest = new AdRequest.Builder().build();
-
-        InterstitialAd.load(this,"ca-app-pub-8594335878312175/6601194411", adRequest,
-
-
-                new InterstitialAdLoadCallback() {
-                    @Override
-                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
-
-                        interstitialAd.show(NewMainActivity.this);
-                        interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
-                            @Override
-                            public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
-                                super.onAdFailedToShowFullScreenContent(adError);
-                            }
-
-                            @Override
-                            public void onAdShowedFullScreenContent() {
-                                super.onAdShowedFullScreenContent();
-                            }
-
-                            @Override
-                            public void onAdDismissedFullScreenContent() {
-                                super.onAdDismissedFullScreenContent();
-                            }
-
-                            @Override
-                            public void onAdImpression() {
-                                super.onAdImpression();
-                            }
-
-                            @Override
-                            public void onAdClicked() {
-                                super.onAdClicked();
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                    }
-                });
     }
 
 

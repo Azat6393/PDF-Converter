@@ -496,7 +496,7 @@
     <string name="welcome_create_pdf_message">Creating a PDF file</string>
     <string name="welcome_create_pdf_info">View the PDF files previously created or create a new one!</string>
     <string name="welcome_themes_title">Different themes</string>
-    <string name="welcome_themes_message">Go to Settings, and you can choose from three type of themes : Black, Dark, White</string>
+    <string name="welcome_themes_message">Go to Settings, and you can choose from two type of themes : Dark, White</string>
     <string name="welcome_merge_title">Merge PDF file</string>
     <string name="welcome_text_to_pdf">Text to PDF</string>
     <string name="welcome_text_to_pdf_message">Convert your text files into your most desired PDFs at ease</string>

@@ -76,7 +76,7 @@
 
 </androidx.drawerlayout.widget.DrawerLayout>
 
-    <LinearLayout
+    <!--<LinearLayout
         android:id="@+id/BottomBanner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -94,7 +94,7 @@
             ads:adUnitId="@string/banner_ad_unit_id">
         </com.google.android.gms.ads.AdView>
 
-    </LinearLayout>
+    </LinearLayout>-->
 </RelativeLayout>
 
 

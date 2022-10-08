@@ -34,6 +34,7 @@ import woynapp.wsann.R;
 import woynapp.wsann.activity.ImagesPreviewActivity;
 import woynapp.wsann.adapter.ExtractImagesAdapter;
 import woynapp.wsann.adapter.MergeFilesAdapter;
+import woynapp.wsann.fragment.new_fragments.PopUpDialog;
 import woynapp.wsann.interfaces.BottomSheetPopulate;
 import woynapp.wsann.interfaces.ExtractImagesListener;
 import woynapp.wsann.interfaces.OnBackPressedInterface;
@@ -205,6 +206,8 @@ public class PdfToImageFragment extends Fragment implements BottomSheetPopulate,
         } else {
             pdfToImage(mInputPassword);
         }
+        PopUpDialog popUpDialog = new PopUpDialog();
+        popUpDialog.show(getChildFragmentManager(), "Pop up dialog");
     }
 
     /**

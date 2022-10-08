@@ -125,7 +125,7 @@ public class ViewFilesFragment extends Fragment
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(root.getContext());
         mViewFilesListRecyclerView.setLayoutManager(mLayoutManager);
         mViewFilesListRecyclerView.setAdapter(mViewFilesAdapter);
-        mViewFilesListRecyclerView.addItemDecoration(new ViewFilesDividerItemDecoration(root.getContext()));
+        //mViewFilesListRecyclerView.addItemDecoration(new ViewFilesDividerItemDecoration(root.getContext()));
         mSwipeView.setOnRefreshListener(this);
 
         int dialogId;

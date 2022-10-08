@@ -29,6 +29,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import woynapp.wsann.R;
 import woynapp.wsann.adapter.EnhancementOptionsAdapter;
+import woynapp.wsann.fragment.new_fragments.PopUpDialog;
 import woynapp.wsann.interfaces.Enhancer;
 import woynapp.wsann.interfaces.OnItemClickListener;
 import woynapp.wsann.interfaces.OnTextToPdfInterface;
@@ -141,6 +142,8 @@ public class TextToPdfFragment extends Fragment implements OnItemClickListener,
                             }
                         })
                 .show();
+        PopUpDialog popUpDialog = new PopUpDialog();
+        popUpDialog.show(getChildFragmentManager(), "Pop up dialog");
     }
 
     /**

@@ -55,6 +55,7 @@ import butterknife.OnClick;
 import woynapp.wsann.R;
 import woynapp.wsann.adapter.EnhancementOptionsAdapter;
 import woynapp.wsann.adapter.MergeFilesAdapter;
+import woynapp.wsann.fragment.new_fragments.PopUpDialog;
 import woynapp.wsann.interfaces.BottomSheetPopulate;
 import woynapp.wsann.interfaces.OnBackPressedInterface;
 import woynapp.wsann.interfaces.OnItemClickListener;
@@ -192,6 +193,8 @@ public class AddTextFragment extends Fragment implements MergeFilesAdapter.OnCli
         } else {
             getRuntimePermissions();
         }
+        PopUpDialog popUpDialog = new PopUpDialog();
+        popUpDialog.show(getChildFragmentManager(), "Pop up dialog");
     }
 
     private void openPdfNameDialog_() {

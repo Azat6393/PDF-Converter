@@ -44,6 +44,19 @@
 
             </androidx.cardview.widget.CardView>
 
+            <TextView
+                android:id="@+id/tvNoOfImages"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/bottomSheetColor"
+                android:gravity="center_horizontal"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:padding="8dp"
+                android:textColor="?attr/bottomSheetTextColor"
+                android:visibility="gone" />
+
             <LinearLayout
                 android:id="@+id/buttonLayout"
                 android:layout_width="match_parent"
@@ -148,19 +161,7 @@
 
     </androidx.core.widget.NestedScrollView>
 
-    <TextView
-        android:id="@+id/tvNoOfImages"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="?attr/bottomSheetColor"
-        android:gravity="center_horizontal"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:padding="8dp"
-        android:textColor="?attr/bottomSheetTextColor"
-        android:visibility="gone" />
+
 
 
 

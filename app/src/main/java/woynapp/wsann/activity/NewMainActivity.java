@@ -1,8 +1,14 @@
 package woynapp.wsann.activity;
 
+import static woynapp.wsann.util.Constants.THEME_BLACK;
+import static woynapp.wsann.util.Constants.THEME_DARK;
+import static woynapp.wsann.util.Constants.THEME_SYSTEM;
+import static woynapp.wsann.util.Constants.THEME_WHITE;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -38,6 +44,8 @@ import com.zhihu.matisse.Matisse;
 
 import java.util.ArrayList;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 import pl.droidsonroids.gif.GifImageView;
 import woynapp.wsann.R;
 import woynapp.wsann.fragment.ImageToPdfFragment;
@@ -45,6 +53,7 @@ import woynapp.wsann.fragment.SettingsFragment;
 import woynapp.wsann.fragment.ViewFilesFragment;
 import woynapp.wsann.fragment.new_fragments.NewHomeFragment;
 import woynapp.wsann.fragment.new_fragments.NewToolFragment;
+import woynapp.wsann.fragment.new_fragments.PopUpDialog;
 import woynapp.wsann.providers.fragmentmanagement.FragmentManagement;
 import woynapp.wsann.util.Constants;
 import woynapp.wsann.util.DirectoryUtils;
@@ -67,6 +76,7 @@ public class NewMainActivity extends AppCompatActivity implements NavigationView
     private SharedPreferences mSharedPreferences;
     private SparseIntArray mFragmentSelectedMap;
     private FragmentManagement mFragmentManagement;
+    private GifImageView gifImageView;
 
     private static final int INTENT_REQUEST_GET_IMAGES = 13;
 
@@ -79,6 +89,7 @@ public class NewMainActivity extends AppCompatActivity implements NavigationView
     public void recreate() {
         super.recreate();
         bottomNavigationView.setSelectedItemId(R.id.homeFragment);
+        setAd();
     }
 
     @SuppressLint("NonConstantResourceId")
@@ -92,11 +103,13 @@ public class NewMainActivity extends AppCompatActivity implements NavigationView
         newDocumentFragment = new ViewFilesFragment();
         newToolFragment = new NewToolFragment();
         newProfileFragment = new SettingsFragment();
-        GifImageView gifImageView = findViewById(R.id.kargo_bul_banner);
+        gifImageView = findViewById(R.id.kargo_bul_banner);
+
 
         mNavigationView = findViewById(R.id.nav_view);
         fab = findViewById(R.id.fab);
 
+        setAd();
         gifImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -174,8 +187,34 @@ public class NewMainActivity extends AppCompatActivity implements NavigationView
         setCurrentFragment(newHomeFragment);
 
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+
     }
 
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    public void setAd() {
+        SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String themeName = mSharedPreferences.getString(Constants.DEFAULT_THEME_TEXT, Constants.DEFAULT_THEME);
+        if (themeName == null)
+            return;
+        switch (themeName) {
+            case THEME_WHITE:
+                gifImageView.setImageResource(R.drawable.banner_light_theme);
+                break;
+            case THEME_BLACK:
+            case THEME_DARK:
+                gifImageView.setImageResource(R.drawable.banner);
+                break;
+            case THEME_SYSTEM:
+            default:
+                if ((this.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES) {
+                    gifImageView.setImageResource(R.drawable.banner);
+                } else {
+                    gifImageView.setImageResource(R.drawable.banner_light_theme);
+                }
+                break;
+        }
+    }
 
     private void getRuntimePermissions() {
         if (Build.VERSION.SDK_INT < 29) {

@@ -40,6 +40,7 @@ import woynapp.wsann.adapter.EnhancementOptionsAdapter;
 import woynapp.wsann.adapter.MergeFilesAdapter;
 import woynapp.wsann.adapter.MergeSelectedFilesAdapter;
 import woynapp.wsann.database.DatabaseHelper;
+import woynapp.wsann.fragment.new_fragments.PopUpDialog;
 import woynapp.wsann.interfaces.BottomSheetPopulate;
 import woynapp.wsann.interfaces.MergeFilesListener;
 import woynapp.wsann.interfaces.OnBackPressedInterface;
@@ -221,6 +222,8 @@ public class MergeFilesFragment extends Fragment implements MergeFilesAdapter.On
 
     @OnClick(R.id.mergebtn)
     void mergeFiles(final View view) {
+        PopUpDialog popUpDialog = new PopUpDialog();
+        popUpDialog.show(getChildFragmentManager(), "Pop up dialog");
         String[] pdfpaths = mFilePaths.toArray(new String[0]);
         String masterpwd = mSharedPrefs.getString(Constants.MASTER_PWD_STRING, Constants.appName);
         new MaterialDialog.Builder(mActivity)

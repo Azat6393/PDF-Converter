@@ -63,6 +63,7 @@ import woynapp.wsann.activity.PreviewActivity;
 import woynapp.wsann.activity.RearrangeImages;
 import woynapp.wsann.adapter.EnhancementOptionsAdapter;
 import woynapp.wsann.database.DatabaseHelper;
+import woynapp.wsann.fragment.new_fragments.PopUpDialog;
 import woynapp.wsann.interfaces.OnItemClickListener;
 import woynapp.wsann.interfaces.OnPDFCreatedInterface;
 import woynapp.wsann.model.EnhancementOptionsEntity;
@@ -235,6 +236,9 @@ public class ImageToPdfFragment extends Fragment implements OnItemClickListener,
         String preFillName = mFileUtils.getLastFileName(mImagesUri);
         String ext = getString(R.string.pdf_ext);
         mFileUtils.openSaveDialog(preFillName, ext, filename -> save(isGrayScale, filename));
+
+        PopUpDialog popUpDialog = new PopUpDialog();
+        popUpDialog.show(getChildFragmentManager(), "Pop up dialog");
     }
 
     /**

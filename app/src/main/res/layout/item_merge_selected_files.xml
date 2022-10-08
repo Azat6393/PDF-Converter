@@ -16,7 +16,8 @@
             android:layout_height="wrap_content"
             android:padding="12dp"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textColor="?attr/primary_color"/>
     </com.balysv.materialripple.MaterialRippleLayout>
 
     <ImageView
@@ -25,7 +26,7 @@
         android:layout_height="25dp"
         android:layout_margin="4dp"
         android:contentDescription="@string/snackbar_viewAction"
-        android:tint="?attr/bottomSheetColor"
+        app:tint="?attr/bottomSheetColor"
         app:srcCompat="@drawable/ic_arrow_upward_black_24dp" />
 
     <ImageView
@@ -34,7 +35,7 @@
         android:layout_height="25dp"
         android:layout_margin="4dp"
         android:contentDescription="@string/snackbar_viewAction"
-        android:tint="?attr/bottomSheetColor"
+        app:tint="?attr/bottomSheetColor"
         app:srcCompat="@drawable/ic_arrow_downward_black_24dp" />
 
     <ImageView
@@ -43,7 +44,7 @@
         android:layout_height="25dp"
         android:layout_margin="4dp"
         android:contentDescription="@string/snackbar_viewAction"
-        android:tint="?attr/bottomSheetColor"
+        app:tint="?attr/bottomSheetColor"
         app:srcCompat="@drawable/view_24dp" />
 
     <ImageView
@@ -52,7 +53,7 @@
         android:layout_height="25dp"
         android:layout_margin="4dp"
         android:contentDescription="@string/delete"
-        android:tint="?attr/bottomSheetColor"
+        app:tint="?attr/bottomSheetColor"
         app:srcCompat="@drawable/ic_close_black_24dp" />
 
 </LinearLayout>

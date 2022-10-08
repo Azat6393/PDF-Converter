@@ -38,6 +38,7 @@ import woynapp.wsann.R;
 import woynapp.wsann.adapter.EnhancementOptionsAdapter;
 import woynapp.wsann.adapter.MergeFilesAdapter;
 import woynapp.wsann.database.DatabaseHelper;
+import woynapp.wsann.fragment.new_fragments.PopUpDialog;
 import woynapp.wsann.interfaces.BottomSheetPopulate;
 import woynapp.wsann.interfaces.OnItemClickListener;
 import woynapp.wsann.interfaces.OnPDFCreatedInterface;
@@ -167,6 +168,8 @@ public class ExceltoPdfFragment extends Fragment implements MergeFilesAdapter.On
         } else {
             getRuntimePermissions();
         }
+        PopUpDialog popUpDialog = new PopUpDialog();
+        popUpDialog.show(getChildFragmentManager(), "Pop up dialog");
     }
 
     private void openExcelToPdf_() {

@@ -36,6 +36,7 @@ import woynapp.wsann.R;
 import woynapp.wsann.activity.RearrangePdfPages;
 import woynapp.wsann.adapter.MergeFilesAdapter;
 import woynapp.wsann.database.DatabaseHelper;
+import woynapp.wsann.fragment.new_fragments.PopUpDialog;
 import woynapp.wsann.interfaces.BottomSheetPopulate;
 import woynapp.wsann.interfaces.OnBackPressedInterface;
 import woynapp.wsann.interfaces.OnPDFCompressedInterface;
@@ -183,6 +184,8 @@ public class RemovePagesFragment extends Fragment implements MergeFilesAdapter.O
 
     @OnClick(R.id.pdfCreate)
     public void parse() {
+        PopUpDialog popUpDialog = new PopUpDialog();
+        popUpDialog.show(getChildFragmentManager(), "Pop up dialog");
         StringUtils.getInstance().hideKeyboard(mActivity);
         if (mOperation.equals(Constants.COMPRESS_PDF)) {
             compressPDF();

@@ -591,8 +591,17 @@
     <string name="please_enter_phone_number">Please enter phone number</string>
     <string name="continue_text">Continue</string>
     <string name="verify_your_phone_number">Phone number</string>
-    <string name="pesmission_canceled_message">Permission canceled</string>
+    <string name="pesmission_canceled_message">Without permission, you cannot use some app features</string>
     <string name="faqs">FAQ</string>
+    <string name="one_more_thing_text">One more thing!</string>
+    <string name="storage_manager_permission_rationale">Android 11+, you need to allow a special storage permission</string>
+    <string name="allow">Allow</string>
+    <string name="close_app_text">Close App</string>
+    <string name="permission_denied_text">Permission Denied</string>
+    <string name="storage_need_rationale_for_not_ask_again_flag">\"You have chosen to never ask the permission again, but storage permission is needed for proper functioning of app. \"</string>
+    <string name="enable_from_settings_text">Enable from settings</string>
+    <string name="storage_need_rationale_description">Storage permission is needed for proper functioning of app.</string>
+    <string name="ask_again_text">Re-try</string>
 
     <string-array name="faq_question_answers">
         <item>What image file formats are supported?#####The app supports jpeg, jpg, tiff, gif, psd, bmp, eps, png, etc.</item>

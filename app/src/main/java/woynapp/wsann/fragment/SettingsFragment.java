@@ -5,6 +5,7 @@ import static woynapp.wsann.util.Constants.THEME_DARK;
 import static woynapp.wsann.util.Constants.THEME_SYSTEM;
 import static woynapp.wsann.util.Constants.THEME_WHITE;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -12,6 +13,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -21,6 +23,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -108,6 +111,7 @@ public class SettingsFragment extends Fragment implements OnItemClickListener, V
     boolean isEditMode = false;
     Uri selectedUri = null;
 
+
     private ActivityResultLauncher<String> getContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
             new ActivityResultCallback<Uri>() {
                 @Override
@@ -118,6 +122,24 @@ public class SettingsFragment extends Fragment implements OnItemClickListener, V
                             .placeholder(R.drawable.avatar_icon)
                             .error(R.drawable.avatar_icon)
                             .into(profilePhoto);
+                    if (uri == null || uri.equals("")){
+                        if (!user.getUser_photo().equals("") && user.getUser_photo() != null) {
+                            Picasso.with(requireContext())
+                                    .load(user.getUser_photo())
+                                    .placeholder(R.drawable.avatar_icon)
+                                    .error(R.drawable.avatar_icon)
+                                    .into(profilePhoto);
+                        }
+                    }
+                }
+            });
+
+    private ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    if (isEditMode) {
+                        getContent.launch("image/*");
+                    }
                 }
             });
 
@@ -142,7 +164,7 @@ public class SettingsFragment extends Fragment implements OnItemClickListener, V
 
         user = userUtils.getUser();
         userNameTv.setText(user.getUser_name() + " " + user.getSurname());
-        if (!user.getUser_photo().equals("") && user.getUser_photo() != null){
+        if (!user.getUser_photo().equals("") && user.getUser_photo() != null) {
             Picasso.with(requireContext())
                     .load(user.getUser_photo())
                     .placeholder(R.drawable.avatar_icon)
@@ -451,7 +473,12 @@ public class SettingsFragment extends Fragment implements OnItemClickListener, V
                 break;
             case R.id.profile_photo:
                 if (isEditMode) {
-                    getContent.launch("image/*");
+                    if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
+                            == PackageManager.PERMISSION_GRANTED) {
+                        getContent.launch("image/*");
+                    } else {
+                        requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
+                    }
                 }
                 break;
             case R.id.save_btn:

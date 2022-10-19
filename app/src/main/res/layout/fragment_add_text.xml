@@ -70,7 +70,6 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/select_text_file"
                 android:layout_gravity="center"
-                android:backgroundTint="?attr/primary_color"
                 android:layout_marginTop="15dp"
                 android:padding="10dp"
                 android:text="@string/create_pdf" />

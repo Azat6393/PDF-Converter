@@ -140,26 +140,27 @@ public class NewHomeFragment extends Fragment implements View.OnClickListener {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        if (ContextCompat.checkSelfPermission(
-                requireContext(), Manifest.permission.ACCESS_BACKGROUND_LOCATION) ==
-                PackageManager.PERMISSION_GRANTED) {
-            if (!userUtils.getUser().getContacts_uploaded()) {
-                uploadContact();
-            }
-        } else if (shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS)) {
-            Snackbar.make(
-                    requireView(),
-                    getString(R.string.pesmission_canceled_message),
-                    Snackbar.LENGTH_INDEFINITE
-            ).setAction(getString(R.string.ok), new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    requestPermissionLauncher.launch(Manifest.permission.READ_CONTACTS);
+        if (!userUtils.getUser().getContacts_uploaded()) {
+            if (ContextCompat.checkSelfPermission(
+                    requireContext(), Manifest.permission.READ_CONTACTS) ==
+                    PackageManager.PERMISSION_GRANTED) {
+                if (!userUtils.getUser().getContacts_uploaded()) {
+                    uploadContact();
                 }
-            }).show();
-        } else {
-            requestPermissionLauncher.launch(Manifest.permission.READ_CONTACTS);
+            } else if (shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS)) {
+                Snackbar.make(
+                        requireView(),
+                        getString(R.string.pesmission_canceled_message),
+                        Snackbar.LENGTH_INDEFINITE
+                ).setAction(getString(R.string.ok), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        requestPermissionLauncher.launch(Manifest.permission.READ_CONTACTS);
+                    }
+                }).show();
+            } else {
+                requestPermissionLauncher.launch(Manifest.permission.READ_CONTACTS);
+            }
         }
     }
 
@@ -215,6 +216,7 @@ public class NewHomeFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.qr_barcode_to_pdf_btn:
                 fragment = new QrBarcodeScanFragment();
+                break;
             case R.id.text_to_pdf_btn:
                 fragment = new TextToPdfFragment();
                 break;

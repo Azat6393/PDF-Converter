@@ -1,27 +1,31 @@
 package woynapp.wsann.fragment;
 
+import static android.app.Activity.RESULT_OK;
+import static woynapp.wsann.util.Constants.REQUEST_CODE_FOR_WRITE_PERMISSION;
+import static woynapp.wsann.util.Constants.STORAGE_LOCATION;
+import static woynapp.wsann.util.Constants.WRITE_PERMISSIONS;
+import static woynapp.wsann.util.Constants.pdfExtension;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import androidx.annotation.NonNull;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.preference.PreferenceManager;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import android.os.ParcelFileDescriptor;
+import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -30,9 +34,19 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.airbnb.lottie.LottieAnimationView;
 import com.dd.morphingbutton.MorphingButton;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.FontFactory;
@@ -41,12 +55,14 @@ import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfImportedPage;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.zhihu.matisse.Matisse;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -55,7 +71,7 @@ import butterknife.OnClick;
 import woynapp.wsann.R;
 import woynapp.wsann.adapter.EnhancementOptionsAdapter;
 import woynapp.wsann.adapter.MergeFilesAdapter;
-import woynapp.wsann.fragment.new_fragments.PopUpDialog;
+import woynapp.wsann.fragment.new_fragments.NewRealPathUtil;
 import woynapp.wsann.interfaces.BottomSheetPopulate;
 import woynapp.wsann.interfaces.OnBackPressedInterface;
 import woynapp.wsann.interfaces.OnItemClickListener;
@@ -72,8 +88,6 @@ import woynapp.wsann.util.PermissionsUtils;
 import woynapp.wsann.util.RealPathUtil;
 import woynapp.wsann.util.StringUtils;
 
-import static android.app.Activity.RESULT_OK;
-
 public class AddTextFragment extends Fragment implements MergeFilesAdapter.OnClickListener,
         BottomSheetPopulate, OnBackPressedInterface, OnItemClickListener {
     private Activity mActivity;
@@ -88,7 +102,6 @@ public class AddTextFragment extends Fragment implements MergeFilesAdapter.OnCli
     private int mFontSize = 0;
     private static final int INTENT_REQUEST_PICK_PDF_FILE_CODE = 10;
     private static final int INTENT_REQUEST_PICK_TEXT_FILE_CODE = 0;
-    private static final int PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE_RESULT = 1;
     private BottomSheetBehavior mSheetBehavior;
 
     @BindView(R.id.select_pdf_file)
@@ -173,8 +186,9 @@ public class AddTextFragment extends Fragment implements MergeFilesAdapter.OnCli
         Uri uri = Uri.parse(Environment.getRootDirectory() + "/");
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setDataAndType(uri, "*/*");
-        String[] mimetypes = {"application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                "application/msword", getString(R.string.text_type)};
+        /*String[] mimetypes = {"application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                "application/msword", getString(R.string.text_type)};*/
+        String[] mimetypes = {getString(R.string.text_type)};
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         try {
@@ -188,13 +202,14 @@ public class AddTextFragment extends Fragment implements MergeFilesAdapter.OnCli
 
     @OnClick(R.id.create_pdf_added_text)
     public void openPdfNameDialog() {
-        if (isStoragePermissionGranted()) {
+        if (ContextCompat.checkSelfPermission(requireContext(),
+                Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(requireContext(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             openPdfNameDialog_();
         } else {
             getRuntimePermissions();
         }
-        PopUpDialog popUpDialog = new PopUpDialog();
-        popUpDialog.show(getChildFragmentManager(), "Pop up dialog");
     }
 
     private void openPdfNameDialog_() {
@@ -223,16 +238,18 @@ public class AddTextFragment extends Fragment implements MergeFilesAdapter.OnCli
         if (data == null || resultCode != RESULT_OK || data.getData() == null)
             return;
         if (requestCode == INTENT_REQUEST_PICK_PDF_FILE_CODE) {
-            mPdfpath = RealPathUtil.getInstance().getRealPath(getContext(), data.getData());
+            mPdfpath = NewRealPathUtil.getRealPath(getActivity().getApplicationContext(), data.getData());
             StringUtils.getInstance().showSnackbar(mActivity, getResources().getString(R.string.snackbar_pdfselected));
         }
         if (requestCode == INTENT_REQUEST_PICK_TEXT_FILE_CODE) {
-            mTextPath = RealPathUtil.getInstance().getRealPath(getContext(), data.getData());
+            mTextPath = NewRealPathUtil.getRealPath(getActivity().getApplicationContext(), data.getData());
             StringUtils.getInstance().showSnackbar(mActivity, getResources().getString(R.string.snackbar_txtselected));
         }
+        System.out.println(mPdfpath + "   " + mTextPath);
         if (mPdfpath != null && mTextPath != null)
             setTextAndActivateButtons(mPdfpath, mTextPath);
     }
+
 
     private void setTextAndActivateButtons(String pdfPath, String textPath) {
         if (pdfPath == null || textPath == null) {
@@ -272,9 +289,9 @@ public class AddTextFragment extends Fragment implements MergeFilesAdapter.OnCli
      * @param fileName - the name of the new pdf that is to be created.
      */
     private void addText(String fileName, int fontSize, Font.FontFamily fontFamily) {
-        String mStorePath = mSharedPreferences.getString(Constants.STORAGE_LOCATION,
+        String mStorePath = mSharedPreferences.getString(STORAGE_LOCATION,
                 StringUtils.getInstance().getDefaultStorageLocation());
-        String mPath = mStorePath + fileName + Constants.pdfExtension;
+        String mPath = mStorePath + fileName + pdfExtension;
         try {
             StringBuilder text = new StringBuilder();
             BufferedReader br = new BufferedReader(new FileReader(mTextPath));
@@ -311,6 +328,7 @@ public class AddTextFragment extends Fragment implements MergeFilesAdapter.OnCli
                             v -> mFileUtils.openFile(mPath, FileUtils.FileType.e_PDF))
                     .show();
         } catch (Exception e) {
+            System.out.println("error: " + e.getLocalizedMessage());
             e.printStackTrace();
         } finally {
             mMorphButtonUtility.initializeButtonForAddText(mSelectPDF, mSelectText, mCreateTextPDF);
@@ -318,26 +336,20 @@ public class AddTextFragment extends Fragment implements MergeFilesAdapter.OnCli
         }
     }
 
-    private boolean isStoragePermissionGranted() {
-        if (Build.VERSION.SDK_INT >= 23 && Build.VERSION.SDK_INT < 29) {
-            return ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
-        } else {
-            return true;
-        }
-    }
     private void getRuntimePermissions() {
-        if (Build.VERSION.SDK_INT < 29) {
-            PermissionsUtils.getInstance().requestRuntimePermissions(this,
-                    Constants.WRITE_PERMISSIONS,
-                    Constants.REQUEST_CODE_FOR_WRITE_PERMISSION);
-        }
+        ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                REQUEST_CODE_FOR_WRITE_PERMISSION);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions, @NonNull int[] grantResults) {
-        PermissionsUtils.getInstance().handleRequestPermissionsResult(mActivity, grantResults,
-                requestCode, Constants.REQUEST_CODE_FOR_WRITE_PERMISSION, this::openPdfNameDialog_);
+        if (requestCode == REQUEST_CODE_FOR_WRITE_PERMISSION && grantResults.length > 0) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openPdfNameDialog_();
+            }
+        }
     }
 
     @Override
@@ -465,7 +477,6 @@ public class AddTextFragment extends Fragment implements MergeFilesAdapter.OnCli
                 .setName(getString(R.string.font_family_text) + mFontFamily.name());
         mTextEnhancementOptionsAdapter.notifyDataSetChanged();
     }
-
 
     @Override
     public void onStart() {

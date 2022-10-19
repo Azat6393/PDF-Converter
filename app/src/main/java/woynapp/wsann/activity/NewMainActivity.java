@@ -1,13 +1,16 @@
 package woynapp.wsann.activity;
 
+import static woynapp.wsann.util.Constants.REQUEST_CODE_FOR_WRITE_PERMISSION;
 import static woynapp.wsann.util.Constants.THEME_BLACK;
 import static woynapp.wsann.util.Constants.THEME_DARK;
 import static woynapp.wsann.util.Constants.THEME_SYSTEM;
 import static woynapp.wsann.util.Constants.THEME_WHITE;
+import static woynapp.wsann.util.Constants.WRITE_PERMISSIONS;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,20 +20,26 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.util.SparseIntArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -40,8 +49,10 @@ import androidx.multidex.BuildConfig;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.zhihu.matisse.Matisse;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import kotlin.Unit;
@@ -92,6 +103,7 @@ public class NewMainActivity extends AppCompatActivity implements NavigationView
         setAd();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +121,7 @@ public class NewMainActivity extends AppCompatActivity implements NavigationView
         mNavigationView = findViewById(R.id.nav_view);
         fab = findViewById(R.id.fab);
 
+        checkAndAskForStoragePermission();
         setAd();
         gifImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,7 +139,7 @@ public class NewMainActivity extends AppCompatActivity implements NavigationView
                         selectImages();
                         mIsButtonAlreadyClicked = true;
                     } else {
-                        getRuntimePermissions();
+                        getRuntimePermissionsWithCamera();
                     }
                 }
             }
@@ -219,8 +232,20 @@ public class NewMainActivity extends AppCompatActivity implements NavigationView
     private void getRuntimePermissions() {
         if (Build.VERSION.SDK_INT < 29) {
             PermissionsUtils.getInstance().requestRuntimePermissions(this,
-                    Constants.WRITE_PERMISSIONS,
-                    Constants.REQUEST_CODE_FOR_WRITE_PERMISSION);
+                    WRITE_PERMISSIONS,
+                    REQUEST_CODE_FOR_WRITE_PERMISSION);
+        } else {
+            PermissionsUtils.getInstance().requestRuntimePermissions(this,
+                    WRITE_PERMISSIONS,
+                    Constants.REQUEST_CODE_FOR_READ_PERMISSION);
+        }
+    }
+
+    private void getRuntimePermissionsWithCamera() {
+        if (Build.VERSION.SDK_INT < 29) {
+            PermissionsUtils.getInstance().requestRuntimePermissions(this,
+                    WRITE_PERMISSIONS,
+                    REQUEST_CODE_FOR_WRITE_PERMISSION);
         } else {
             PermissionsUtils.getInstance().requestRuntimePermissions(this,
                     Constants.READ_PERMISSIONS,
@@ -267,6 +292,14 @@ public class NewMainActivity extends AppCompatActivity implements NavigationView
     @Override
     protected void onResume() {
         super.onResume();
+        if (mSettingsActivityOpenedForManageStoragePermission) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                if (!Environment.isExternalStorageManager()) {
+                    askStorageManagerPermission();
+                }
+            }
+        }
+
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
         if (actionBar != null)
@@ -401,6 +434,70 @@ public class NewMainActivity extends AppCompatActivity implements NavigationView
             setTitle(title);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void checkAndAskForStoragePermission() {
+        if (!PermissionsUtils.getInstance().checkRuntimePermissions(this, WRITE_PERMISSIONS)) {
+            getRuntimePermissions();
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                if (!Environment.isExternalStorageManager()) {
+                    askStorageManagerPermission();
+                }
+            }
+        }
+    }
+
+    private void showSnackBar(String[] permissions) {
+        Snackbar.make(
+                findViewById(R.id.content),
+                getString(R.string.pesmission_canceled_message),
+                Snackbar.LENGTH_INDEFINITE
+        ).setAction(getString(R.string.ok), new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ActivityCompat.requestPermissions(NewMainActivity.this, permissions, REQUEST_CODE_FOR_WRITE_PERMISSION);
+            }
+        }).show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        PermissionsUtils.getInstance().handleRequestPermissionsResult(this, grantResults,
+                requestCode, REQUEST_CODE_FOR_WRITE_PERMISSION, this::askStorageManagerPermission);
+
+        if (!mSettingsActivityOpenedForManageStoragePermission) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                if (!Environment.isExternalStorageManager()) {
+                    askStorageManagerPermission();
+                }
+            }
+        }
+    }
+
+    private boolean mSettingsActivityOpenedForManageStoragePermission = false;
+
+
+    private void askStorageManagerPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (!Environment.isExternalStorageManager()) {
+                new AlertDialog.Builder(this)
+                        .setTitle(R.string.one_more_thing_text)
+                        .setMessage(R.string.storage_manager_permission_rationale)
+                        .setCancelable(false)
+                        .setPositiveButton(R.string.allow, (dialog, which) -> {
+                            Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                            Uri uri = Uri.fromParts("package", getPackageName(), null);
+                            intent.setData(uri);
+                            mSettingsActivityOpenedForManageStoragePermission = true;
+                            startActivity(intent);
+                            dialog.dismiss();
+                        }).setNegativeButton(R.string.close_app_text, ((dialog, which) -> finishAndRemoveTask()))
+                        .show();
+            }
+        }
+    }
 
     private void setTitleMap() {
         mFragmentSelectedMap = new SparseIntArray();

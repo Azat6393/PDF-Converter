@@ -19,6 +19,8 @@ import static woynapp.wsann.util.Constants.READ_PERMISSIONS;
 import static woynapp.wsann.util.Constants.REQUEST_CODE_FOR_WRITE_PERMISSION;
 import static woynapp.wsann.util.Constants.WRITE_PERMISSIONS;
 
+import woynapp.wsann.R;
+
 /**
  * !! IMPORTANT !!
  * permission arrays are defined in Constants.java file. we have two types of permissions:
@@ -118,20 +120,20 @@ public class PermissionsUtils {
         }
         if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permission[0])) {
             new AlertDialog.Builder(activity)
-                    .setTitle("Permission Denied")
-                    .setMessage("Storage permission is needed for proper functioning of app.")
-                    .setPositiveButton("Re-try", (dialog, which) -> {
+                    .setTitle(R.string.permission_denied_text)
+                    .setMessage(R.string.storage_need_rationale_description)
+                    .setPositiveButton(R.string.ask_again_text, (dialog, which) -> {
                         requestRuntimePermissions(activity, permission, REQUEST_CODE_FOR_WRITE_PERMISSION);
                         dialog.dismiss();
                     })
-                    .setNegativeButton("Cancel", (dialog, which) -> {
+                    .setNegativeButton(R.string.cancel, (dialog, which) -> {
                         dialog.dismiss();
                     }).show();
         } else if (!ActivityCompat.shouldShowRequestPermissionRationale(activity, permission[0])) {
             new AlertDialog.Builder(activity)
-                    .setTitle("Permission Denied")
-                    .setMessage("You have chosen to never ask the permission again, but storage permission is needed for proper functioning of app. ")
-                    .setPositiveButton("Enable from settings", (dialog, which) -> {
+                    .setTitle(R.string.permission_denied_text)
+                    .setMessage(R.string.storage_need_rationale_for_not_ask_again_flag)
+                    .setPositiveButton(R.string.enable_from_settings_text, (dialog, which) -> {
                         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                         Uri uri = Uri.fromParts("package", activity.getPackageName(), null);
                         intent.setData(uri);
@@ -141,7 +143,7 @@ public class PermissionsUtils {
                         activity.startActivity(intent);
                         dialog.dismiss();
                     })
-                    .setNegativeButton("Cancel", (dialog, which) -> {
+                    .setNegativeButton(R.string.cancel, (dialog, which) -> {
                         dialog.dismiss();
                     }).show();
         }

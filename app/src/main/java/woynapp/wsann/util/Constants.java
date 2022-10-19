@@ -123,10 +123,12 @@ public class Constants {
 
 
     public static final String[] WRITE_PERMISSIONS = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.CAMERA
     };
     public static final String[] READ_PERMISSIONS = {
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.CAMERA
     };

@@ -1,5 +1,6 @@
 package woynapp.wsann.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -144,6 +145,7 @@ public class ImageEditor extends AppCompatActivity implements OnFilterItemClicke
     }
 
     // modify current image num & display in text view
+    @SuppressLint("StringFormatInvalid")
     private void changeAndShowImageCount(int count) {
 
         if (count < 0 || count >= mDisplaySize)

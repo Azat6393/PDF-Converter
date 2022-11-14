@@ -1,11 +1,16 @@
 package woynapp.wsann.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,10 +21,12 @@ import android.widget.TextView;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
+
 import butterknife.ButterKnife;
 import woynapp.wsann.R;
 import woynapp.wsann.fragment.ImageToPdfFragment;
@@ -37,6 +44,9 @@ public class CropImageActivity extends AppCompatActivity {
     private boolean mFinishedClicked = false;
     private CropImageView mCropImageView;
 
+    private boolean isPdfCrop = false;
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onCreate(Bundle savedInstanceState) {
         ThemeUtils.getInstance().setThemeApp(this);
@@ -52,7 +62,14 @@ public class CropImageActivity extends AppCompatActivity {
 
         setUpCropImageView();
 
-        mImages = ImageToPdfFragment.mImagesUri;
+        if (ImageToPdfFragment.mImagesUri.isEmpty()) {
+            mImages = PdfViewerActivity.mImagesUri;
+            mCropImageView.setBackgroundColor(getColor(R.color.black));
+            toolbar.setTitle("");
+            isPdfCrop = true;
+        } else {
+            mImages = ImageToPdfFragment.mImagesUri;
+        }
         mFinishedClicked = false;
 
         for (int i = 0; i < mImages.size(); i++)
@@ -101,7 +118,7 @@ public class CropImageActivity extends AppCompatActivity {
     }
 
     public void nextImageClicked() {
-        if ( mImages.size() == 0)
+        if (mImages.size() == 0)
             return;
 
         if (!mCurrentImageEdited) {
@@ -113,7 +130,7 @@ public class CropImageActivity extends AppCompatActivity {
     }
 
     public void prevImgBtnClicked() {
-        if ( mImages.size() == 0)
+        if (mImages.size() == 0)
             return;
 
         if (!mCurrentImageEdited) {
@@ -155,6 +172,11 @@ public class CropImageActivity extends AppCompatActivity {
      */
     private void setUpCropImageView() {
         mCropImageView.setOnCropImageCompleteListener((CropImageView view, CropImageView.CropResult result) -> {
+            if (isPdfCrop) {
+                String path = mCroppedImageUris.get(mCurrentImageIndex).getPath();
+                File file = new File(path);
+                file.delete();
+            }
             mCroppedImageUris.put(mCurrentImageIndex, result.getUri());
             mCropImageView.setImageUriAsync(mCroppedImageUris.get(mCurrentImageIndex));
 
@@ -169,10 +191,11 @@ public class CropImageActivity extends AppCompatActivity {
 
     /**
      * Set image in crop image view & increment counters
+     *
      * @param index - image index
      */
+    @SuppressLint("DefaultLocale")
     private void setImage(int index) {
-
         mCurrentImageEdited = false;
         if (index < 0 || index >= mImages.size())
             return;
@@ -180,5 +203,17 @@ public class CropImageActivity extends AppCompatActivity {
         mImageCount.setText(String.format("%s %d of %d", getString(R.string.cropImage_activityTitle)
                 , index + 1, mImages.size()));
         mCropImageView.setImageUriAsync(mCroppedImageUris.get(index));
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        for (Uri imagePath : mCroppedImageUris.values()) {
+            File file = new File(imagePath.getPath());
+            if (file.exists()) {
+                file.delete();
+            }
+        }
+        mImages.clear();
     }
 }

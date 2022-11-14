@@ -21,11 +21,13 @@ import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 import woynapp.wsann.R;
 import woynapp.wsann.database.DatabaseHelper;
+import woynapp.wsann.fragment.new_fragments.UpdateScreenListener;
 import woynapp.wsann.interfaces.DataSetChanged;
 import woynapp.wsann.model.Watermark;
 
@@ -60,9 +62,9 @@ public class WatermarkUtils {
         final Spinner fontFamilyInput = mDialog.getCustomView().findViewById(R.id.watermarkFontFamily);
         final Spinner styleInput = mDialog.getCustomView().findViewById(R.id.watermarkStyle);
 
-        fontFamilyInput.setAdapter(new ArrayAdapter<>(mContext, android.R.layout.simple_spinner_dropdown_item,
+        fontFamilyInput.setAdapter(new ArrayAdapter<>(mContext, R.layout.item_spinner,
                 Font.FontFamily.values()));
-        styleInput.setAdapter(new ArrayAdapter<>(mContext, android.R.layout.simple_spinner_dropdown_item,
+        styleInput.setAdapter(new ArrayAdapter<>(mContext, R.layout.item_spinner,
                 mContext.getResources().getStringArray(R.array.fontStyles)));
 
         angleInput.setText("0");
@@ -112,6 +114,125 @@ public class WatermarkUtils {
         });
         mDialog.show();
     }
+
+    public void setWatermark(String path, UpdateScreenListener listener) {
+
+        final MaterialDialog mDialog = new MaterialDialog.Builder(mContext)
+                .title(R.string.add_watermark)
+                .customView(R.layout.add_watermark_dialog, true)
+                .positiveText(android.R.string.ok)
+                .negativeText(android.R.string.cancel)
+                .build();
+
+        final View mPositiveAction = mDialog.getActionButton(DialogAction.POSITIVE);
+
+        this.mWatermark = new Watermark();
+
+        final EditText watermarkTextInput = mDialog.getCustomView().findViewById(R.id.watermarkText);
+        final EditText angleInput = mDialog.getCustomView().findViewById(R.id.watermarkAngle);
+        final ColorPickerView colorPickerInput = mDialog.getCustomView().findViewById(R.id.watermarkColor);
+        final EditText fontSizeInput = mDialog.getCustomView().findViewById(R.id.watermarkFontSize);
+        final Spinner fontFamilyInput = mDialog.getCustomView().findViewById(R.id.watermarkFontFamily);
+        final Spinner styleInput = mDialog.getCustomView().findViewById(R.id.watermarkStyle);
+
+        fontFamilyInput.setAdapter(new ArrayAdapter<>(mContext, R.layout.item_spinner,
+                Font.FontFamily.values()));
+        styleInput.setAdapter(new ArrayAdapter<>(mContext, R.layout.item_spinner,
+                mContext.getResources().getStringArray(R.array.fontStyles)));
+
+        angleInput.setText("0");
+        fontSizeInput.setText("50");
+
+        watermarkTextInput.addTextChangedListener(
+                new DefaultTextWatcher() {
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        mPositiveAction.setEnabled(s.toString().trim().length() > 0);
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable input) {
+                        if (StringUtils.getInstance().isEmpty(input))
+                            StringUtils.getInstance().
+                                    showSnackbar(mContext, R.string.snackbar_watermark_cannot_be_blank);
+                        else {
+                            mWatermark.setWatermarkText(input.toString());
+                        }
+                    }
+                });
+
+        mPositiveAction.setEnabled(false);
+        mPositiveAction.setOnClickListener(v -> {
+            try {
+                mWatermark.setWatermarkText(watermarkTextInput.getText().toString());
+                mWatermark.setFontFamily(((Font.FontFamily) fontFamilyInput.getSelectedItem()));
+                mWatermark.setFontStyle(getStyleValueFromName(((String) styleInput.getSelectedItem())));
+
+                mWatermark.setRotationAngle(StringUtils.getInstance().parseIntOrDefault(angleInput.getText(), 0));
+                mWatermark.setTextSize(StringUtils.getInstance().parseIntOrDefault(fontSizeInput.getText(), 50));
+
+                //colorPickerInput.getColor() returns ans ARGB Color and BaseColor can use that ARGB as parameter
+                mWatermark.setTextColor((new BaseColor(colorPickerInput.getColor())));
+
+                String filePath = addWatermark(path);
+                if (!filePath.equals("")){
+                    listener.updateScreen();
+                }
+                //StringUtils.getInstance().getSnackbarwithAction(mContext, R.string.watermark_added).show();
+            } catch (IOException | DocumentException e) {
+                e.printStackTrace();
+                StringUtils.getInstance().showSnackbar(mContext, R.string.cannot_add_watermark);
+            }
+            mDialog.dismiss();
+        });
+        mDialog.show();
+    }
+
+    private String addWatermark(String path) throws IOException, DocumentException {
+        String finalOutputFile = mFileUtils.getUniqueFileName(path.replace(mContext.getString(R.string.pdf_ext),
+                mContext.getString(R.string.watermarked_file)));
+
+        File mFile = new File(path);
+        String fileName = FileUtils.getFileName(path);
+        PdfReader reader = new PdfReader(path);
+
+        PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(finalOutputFile));
+        Font font = new Font(this.mWatermark.getFontFamily(), this.mWatermark.getTextSize(),
+                this.mWatermark.getFontStyle(), this.mWatermark.getTextColor());
+        Phrase p = new Phrase(this.mWatermark.getWatermarkText(), font);
+
+        PdfContentByte over;
+        Rectangle pageSize;
+        float x, y;
+        int n = reader.getNumberOfPages();
+        for (int i = 1; i <= n; i++) {
+
+            // get page size and position
+            pageSize = reader.getPageSizeWithRotation(i);
+            x = (pageSize.getLeft() + pageSize.getRight()) / 2;
+            y = (pageSize.getTop() + pageSize.getBottom()) / 2;
+            over = stamper.getOverContent(i);
+
+            ColumnText.showTextAligned(over, Element.ALIGN_CENTER, p, x, y, this.mWatermark.getRotationAngle());
+        }
+
+        stamper.close();
+        reader.close();
+        String oldPath = mFile.getPath();
+        if (mFile.exists() && !mFile.delete()) {
+            StringUtils.getInstance().showSnackbar(mContext, R.string.cannot_add_watermark);
+        }else {
+            String newfilename = oldPath;
+            File newfile = new File(newfilename);
+            File file = new File(finalOutputFile);
+            file.renameTo(newfile);
+        }
+
+        new DatabaseHelper(mContext).insertRecord(finalOutputFile, mContext.getString(R.string.watermarked));
+
+        return finalOutputFile;
+    }
+
 
     private String createWatermark(String path) throws IOException, DocumentException {
         String finalOutputFile = mFileUtils.getUniqueFileName(path.replace(mContext.getString(R.string.pdf_ext),

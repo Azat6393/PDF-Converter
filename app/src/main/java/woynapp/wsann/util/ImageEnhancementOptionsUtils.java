@@ -1,8 +1,12 @@
 package woynapp.wsann.util;
 
+import static woynapp.wsann.util.Constants.THEME_DARK;
+
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.preference.PreferenceManager;
 
 import java.util.ArrayList;
 
@@ -30,8 +34,15 @@ public class ImageEnhancementOptionsUtils {
                                                                      ImageToPDFOptions pdfOptions) {
         ArrayList<EnhancementOptionsEntity> options = new ArrayList<>();
         int passwordIcon = R.drawable.new_protect;
-        if (pdfOptions.isPasswordProtected())
-            passwordIcon = R.drawable.baseline_done_24;
+        if (pdfOptions.isPasswordProtected()){
+            SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+            String themeName = mSharedPreferences.getString(Constants.DEFAULT_THEME_TEXT, Constants.DEFAULT_THEME);
+            if (themeName.equals(THEME_DARK)){
+                passwordIcon = R.drawable.baseline_done_24;
+            }else {
+                passwordIcon = R.drawable.baseline_done_black_24;
+            }
+        }
 
         options.add(new EnhancementOptionsEntity(
                 context, passwordIcon, R.string.password_protect_pdf_text));

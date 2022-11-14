@@ -447,19 +447,6 @@ public class NewMainActivity extends AppCompatActivity implements NavigationView
         }
     }
 
-    private void showSnackBar(String[] permissions) {
-        Snackbar.make(
-                findViewById(R.id.content),
-                getString(R.string.pesmission_canceled_message),
-                Snackbar.LENGTH_INDEFINITE
-        ).setAction(getString(R.string.ok), new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ActivityCompat.requestPermissions(NewMainActivity.this, permissions, REQUEST_CODE_FOR_WRITE_PERMISSION);
-            }
-        }).show();
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {

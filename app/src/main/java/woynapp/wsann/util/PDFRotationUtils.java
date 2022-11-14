@@ -11,10 +11,12 @@ import com.itextpdf.text.pdf.PdfNumber;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
 
+import java.io.File;
 import java.io.FileOutputStream;
 
 import woynapp.wsann.R;
 import woynapp.wsann.database.DatabaseHelper;
+import woynapp.wsann.fragment.new_fragments.UpdateScreenListener;
 import woynapp.wsann.interfaces.DataSetChanged;
 
 public class PDFRotationUtils {
@@ -60,6 +62,26 @@ public class PDFRotationUtils {
                 .show();
     }
 
+
+    public void rotatePages(String sourceFilePath, UpdateScreenListener listener) {
+        MaterialDialog.Builder builder = DialogUtils.getInstance().createCustomDialogWithoutContent(mContext,
+                R.string.rotate_pages);
+        builder.customView(R.layout.dialog_rotate_pdf, true)
+                .onPositive((dialog, which) -> {
+                    final RadioGroup angleInput = dialog.getCustomView().findViewById(R.id.rotation_angle);
+                    int angle = mAngleRadioButton.get(angleInput.getCheckedRadioButtonId());
+                    String fileName = FileUtils.getFileName(sourceFilePath);
+                    boolean result = rotatePDFPages(angle, sourceFilePath);
+                    if (result) {
+                        new DatabaseHelper(mContext).insertRecord(fileName,
+                                mContext.getString(R.string.rotated));
+                        listener.updateScreen();
+                    }
+                })
+                .show();
+
+    }
+
     /**
      * Rotates pages in pdf
      *
@@ -93,6 +115,37 @@ public class PDFRotationUtils {
             return true;
         } catch (Exception e) {
             e.printStackTrace();
+            StringUtils.getInstance().showSnackbar(mContext, R.string.encrypted_pdf);
+        }
+        return false;
+    }
+
+    private boolean rotatePDFPages(int angle, String sourceFilePath) {
+        try {
+            PdfReader reader = new PdfReader(sourceFilePath);
+            int n = reader.getNumberOfPages();
+            PdfDictionary page;
+            PdfNumber rotate;
+            for (int p = 1; p <= n; p++) {
+                page = reader.getPageN(p);
+                rotate = page.getAsNumber(PdfName.ROTATE);
+                if (rotate == null)
+                    page.put(PdfName.ROTATE, new PdfNumber(angle));
+                else
+                    page.put(PdfName.ROTATE, new PdfNumber((rotate.intValue() + angle) % 360));
+            }
+            File mFile = new File(sourceFilePath);
+            if (mFile.exists() && !mFile.delete()){
+                StringUtils.getInstance().showSnackbar(mContext, R.string.encrypted_pdf);
+            }else {
+                PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(sourceFilePath));
+                stamper.close();
+                reader.close();
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getLocalizedMessage());
             StringUtils.getInstance().showSnackbar(mContext, R.string.encrypted_pdf);
         }
         return false;

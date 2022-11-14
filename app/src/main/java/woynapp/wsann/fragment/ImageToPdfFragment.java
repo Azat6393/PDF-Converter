@@ -590,10 +590,10 @@ public class ImageToPdfFragment extends Fragment implements OnItemClickListener,
         final Spinner styleInput = dialog.getCustomView().findViewById(R.id.watermarkStyle);
 
         ArrayAdapter<Font.FontFamily> fontFamilyAdapter = new ArrayAdapter<>(mActivity,
-                android.R.layout.simple_spinner_dropdown_item, Font.FontFamily.values());
+                R.layout.item_spinner, Font.FontFamily.values());
         fontFamilyInput.setAdapter(fontFamilyAdapter);
 
-        ArrayAdapter<String> styleAdapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_dropdown_item,
+        ArrayAdapter<String> styleAdapter = new ArrayAdapter<>(mActivity, R.layout.item_spinner,
                 mActivity.getResources().getStringArray(R.array.fontStyles));
         styleInput.setAdapter(styleAdapter);
 

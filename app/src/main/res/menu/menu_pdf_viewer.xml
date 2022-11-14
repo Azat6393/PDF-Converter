@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/menu_pdf_viewer_share"
+        android:title="@string/share"
+        android:icon="@drawable/baseline_share_24"
+        app:showAsAction="ifRoom"/>
+
+    <item android:id="@+id/menu_pdf_viewer_print"
+        android:title="@string/print"/>
+
+    <item android:id="@+id/menu_pdf_viewer_rename"
+        android:title="@string/rename"/>
+
+    <item android:id="@+id/menu_pdf_viewer_add_password"
+        android:title="@string/add_password"/>
+
+    <item android:id="@+id/menu_pdf_viewer_delete_password"
+        android:title="@string/delete_password"/>
+
+    <item android:id="@+id/menu_pdf_viewer_delete"
+        android:title="@string/delete"/>
+
+</menu>

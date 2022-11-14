@@ -603,6 +603,19 @@
     <string name="storage_need_rationale_description">Storage permission is needed for proper functioning of app.</string>
     <string name="ask_again_text">Re-try</string>
 
+    <string name="our_commitment_to_protecting_your_privacy">Our commitment to protecting your privacy</string>
+    <string name="please_scroll_below">Please scroll below to review the key points of our Privacy Policy and Terms of service</string>
+    <string name="amp"><![CDATA[&]]></string>
+    <string name="agree_and_continue">Agree and Continue</string>
+    <string name="we_use_data_for_the_following_purposes">We use data for the following purposes:\n\n • To enable, personalise, deliver and improve our Services.\n\n\n Tags and your current stored data:\n\n • Your contacts in your phonebook are never stored somewhere\n\n\n If you do not with to accept, you may uninstall W Scann</string>
+    <string name="term_of_service">Term of Service</string>
+
+    <string name="please_accept_permission">Please accept the Privacy Policy</string>
+    <string name="print">Print</string>
+    <string name="rename">Rename</string>
+    <string name="delete_password">Delete password</string>
+
+
     <string-array name="faq_question_answers">
         <item>What image file formats are supported?#####The app supports jpeg, jpg, tiff, gif, psd, bmp, eps, png, etc.</item>
         <item>Can I create a new text file using the app?#####You can only create a new text file by extracting texts from an existing PDFs. To create a text file, \n1) Click the <strong>Extract Text</strong> option on the homepage. \n2) Select the PDF using <strong>SELECT PDF FILE</strong> button. \n3) Then, click <strong>EXTRACT TEXT</strong>. \n4) Once done, a text file with the texts from the PDF file will be created.</item>

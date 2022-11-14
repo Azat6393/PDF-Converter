@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import woynapp.wsann.R;
+import woynapp.wsann.activity.PdfViewerActivity;
 import woynapp.wsann.database.DatabaseHelper;
 import woynapp.wsann.util.lambda.Consumer;
 
@@ -126,7 +127,10 @@ public class FileUtils {
      * @param path - file path
      */
     private void openFileInternal(String path, String dataType) {
-        File file = new File(path);
+        Intent intent = new Intent(mContext, PdfViewerActivity.class);
+        intent.putExtra("pdf_viewer", path);
+        mContext.startActivity(intent);
+        /*File file = new File(path);
         Intent target = new Intent(Intent.ACTION_VIEW);
         target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         try {
@@ -137,7 +141,7 @@ public class FileUtils {
             openIntent(Intent.createChooser(target, mContext.getString(R.string.open_file)));
         } catch (Exception e) {
             StringUtils.getInstance().showSnackbar(mContext, R.string.error_open_file);
-        }
+        }*/
     }
 
     /**
@@ -354,6 +358,7 @@ public class FileUtils {
                 outputFileName = outputFileName.replace(mContext.getString(R.string.pdf_ext),
                         append + mContext.getResources().getString(R.string.pdf_ext));
             }
+
         }
 
         return outputFileName;

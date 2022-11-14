@@ -51,7 +51,7 @@ public class MyCardView extends LinearLayout {
      * Initialize card view with no attribute sets
      */
     private void init() {
-        inflate(getContext(), R.layout.item_view_enhancement_option, this);
+        inflate(getContext(), R.layout.item_qr_barcode, this);
         this.text = findViewById(R.id.option_name);
         this.icon = findViewById(R.id.option_image);
     }
@@ -61,7 +61,7 @@ public class MyCardView extends LinearLayout {
      * @param attrs - attribute set
      */
     private void init(AttributeSet attrs) {
-        inflate(getContext(), R.layout.item_view_enhancement_option, this);
+        inflate(getContext(), R.layout.item_qr_barcode, this);
 
         TypedArray a = getContext().obtainStyledAttributes(
                 attrs, R.styleable.MyCardView);

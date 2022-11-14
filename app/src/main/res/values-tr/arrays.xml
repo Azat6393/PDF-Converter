@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="sort_options">
+        <item>Isim</item>
+        <item>Tarih</item>
+        <item>Boyut ▲</item>
+        <item>Boyut ▼</item>
+    </string-array>
+
+    <string-array name="sort_options_images">
+        <item>Isim ▲</item>
+        <item>Isim ▼</item>
+        <item>Tarih ▲</item>
+        <item>Tarih ▼</item>
+    </string-array>
+
+    <string-array name="filter_options_history">
+        <item>Oluşturuldu</item>
+        <item>Silindi</item>
+        <item>Yeniden adlandırıldı</item>
+        <item>Döndürüldü</item>
+        <item>Basıldı</item>
+        <item>Şifre çözüldü</item>
+        <item>Şifrelendi</item>
+        <item>Ters çevrildi</item>
+    </string-array>
+
+</resources>

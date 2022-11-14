@@ -3,6 +3,7 @@ package woynapp.wsann.activity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.WebSettings;
@@ -33,6 +34,13 @@ public class WebViewActivity extends AppCompatActivity {
         webView.getSettings().setMediaPlaybackRequiresUserGesture(true);
         webView.getSettings().setAllowContentAccess(true);
         webView.getSettings().setSupportMultipleWindows(false);
-        webView.loadUrl("https://www.kargobul.com.tr/");
+
+        Intent intent = getIntent();
+        String url = intent.getStringExtra("url");
+        if (url == null){
+            webView.loadUrl("https://www.kargobul.com.tr/");
+        }else {
+            webView.loadUrl(url);
+        }
     }
 }

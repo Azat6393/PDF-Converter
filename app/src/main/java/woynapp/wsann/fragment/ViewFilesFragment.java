@@ -4,6 +4,7 @@ import static woynapp.wsann.util.Constants.ADD_PASSWORD;
 import static woynapp.wsann.util.Constants.ADD_WATERMARK;
 import static woynapp.wsann.util.Constants.REMOVE_PASSWORD;
 import static woynapp.wsann.util.Constants.ROTATE_PAGES;
+import static woynapp.wsann.util.Constants.SEARCH_FILE;
 
 import android.Manifest;
 import android.app.Activity;
@@ -36,6 +37,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -131,7 +133,9 @@ public class ViewFilesFragment extends Fragment
         int dialogId;
         if (getArguments() != null) {
             dialogId = getArguments().getInt(Constants.BUNDLE_DATA);
-            DialogUtils.getInstance().showFilesInfoDialog(mActivity, dialogId);
+            if (getArguments().getInt(Constants.BUNDLE_DATA) < SEARCH_FILE){
+                DialogUtils.getInstance().showFilesInfoDialog(mActivity, dialogId);
+            }
         }
         sort.setOnClickListener(this);
         share.setOnClickListener(this);
@@ -507,9 +511,12 @@ public class ViewFilesFragment extends Fragment
         }
     }*/
 
+
     @Override
     public void onStart() {
         super.onStart();
+        populatePdfList(null);
+
         int dialogId;
         if (getArguments() != null) {
             dialogId = getArguments().getInt(Constants.BUNDLE_DATA);
@@ -517,6 +524,15 @@ public class ViewFilesFragment extends Fragment
                 case ROTATE_PAGES:
                 case REMOVE_PASSWORD:
                 case ADD_PASSWORD:
+                case SEARCH_FILE:
+                    search.requestFocus();
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(search, InputMethodManager.SHOW_IMPLICIT);
+                    mActivity.findViewById(R.id.fab).setVisibility(View.GONE);
+                    mActivity.findViewById(R.id.toolbar_background_layout).setVisibility(View.GONE);
+                    mActivity.findViewById(R.id.coordinatorLayout).setVisibility(View.GONE);
+                    mActivity.findViewById(R.id.kargo_bul_banner).setVisibility(View.VISIBLE);
+                    break;
                 case ADD_WATERMARK:
                     mActivity.findViewById(R.id.fab).setVisibility(View.GONE);
                     mActivity.findViewById(R.id.toolbar_background_layout).setVisibility(View.GONE);

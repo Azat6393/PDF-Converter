@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "174832374276",
+    "firebase_url": "https://w-scann-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "w-scann",
     "storage_bucket": "w-scann.appspot.com"
   },
@@ -14,19 +15,27 @@
       },
       "oauth_client": [
         {
-          "client_id": "174832374276-4jlaet48vb9g02dn62gaarumkpp6bqfk.apps.googleusercontent.com",
+          "client_id": "174832374276-4520b2q157h01tacf7erfcqm9cncps6l.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "woynapp.wsann",
-            "certificate_hash": "2eb1cfc5acf1629e197ab97261a1e477470ea369"
+            "certificate_hash": "bd3e1fdb3af98d694e370dc1f1e54184e488992d"
           }
         },
         {
-          "client_id": "174832374276-l8husdeiut7ittsofb4c6cjgt7tcnsvn.apps.googleusercontent.com",
+          "client_id": "174832374276-5pb4510f7ut04hcelamtpf8teeitqpoa.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "woynapp.wsann",
-            "certificate_hash": "6b7d6d030fc5cbdec43bd91d6093b80697c5331d"
+            "certificate_hash": "9528ba45738e5a255425d02495a7f3f17538042a"
+          }
+        },
+        {
+          "client_id": "174832374276-it4tl4vbithssbupscp8tn4n4rujuv70.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "woynapp.wsann",
+            "certificate_hash": "fabb06e701cbb04a376fcf24c5a0fcaa5c2b8be7"
           }
         },
         {

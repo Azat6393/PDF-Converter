@@ -91,6 +91,44 @@ public class PDFEncryptionUtility {
         });
     }
 
+    public void setPassword(final String filePath) {
+
+        mDialog.setTitle(R.string.set_password);
+        final View mPositiveAction = mDialog.getActionButton(DialogAction.POSITIVE);
+        assert mDialog.getCustomView() != null;
+        EditText mPasswordInput = mDialog.getCustomView().findViewById(R.id.password);
+        mPasswordInput.addTextChangedListener(
+                new DefaultTextWatcher() {
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        mPositiveAction.setEnabled(s.toString().trim().length() > 0);
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable input) {
+                        if (StringUtils.getInstance().isEmpty(input))
+                            StringUtils.getInstance().
+                                    showSnackbar(mContext, R.string.snackbar_password_cannot_be_blank);
+                        else
+                            mPassword = input.toString();
+                    }
+                });
+        mDialog.show();
+        mPositiveAction.setEnabled(false);
+        mPositiveAction.setOnClickListener(v -> {
+            try {
+                String path = doEncryption(filePath, mPassword);
+                StringUtils.getInstance().getSnackbarwithAction(mContext, R.string.snackbar_pdfCreated)
+                        .setAction(R.string.snackbar_viewAction, v2 ->
+                                mFileUtils.openFile(path, FileUtils.FileType.e_PDF)).show();
+            } catch (IOException | DocumentException e) {
+                e.printStackTrace();
+                StringUtils.getInstance().showSnackbar(mContext, R.string.cannot_add_password);
+            }
+            mDialog.dismiss();
+        });
+    }
+
     /**
      * Uses PDF Reader to set encryption in pdf file.
      *
@@ -182,6 +220,45 @@ public class PDFEncryptionUtility {
             mDialog.dismiss();
         });
     }
+    public void removePassword(final String file) {
+
+        if (!isPDFEncrypted(file))
+            return;
+
+        final String[] input_password = new String[1];
+        mDialog.setTitle(R.string.enter_password);
+        final View mPositiveAction = mDialog.getActionButton(DialogAction.POSITIVE);
+        final EditText mPasswordInput = Objects.requireNonNull(mDialog.getCustomView()).findViewById(R.id.password);
+        TextView text = mDialog.getCustomView().findViewById(R.id.enter_password);
+        text.setText(R.string.decrypt_message);
+        mPasswordInput.addTextChangedListener(
+                new DefaultTextWatcher() {
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        mPositiveAction.setEnabled(s.toString().trim().length() > 0);
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable input) {
+                        input_password[0] = input.toString();
+                    }
+                });
+        mDialog.show();
+        mPositiveAction.setEnabled(false);
+        mPositiveAction.setOnClickListener(v -> {
+
+            // check for password
+            // our master password & their user password
+            // their master password
+
+            if (!removePasswordUsingDefMasterPassword(file, input_password)) {
+                if (!removePasswordUsingInputMasterPassword(file, input_password)) {
+                    StringUtils.getInstance().showSnackbar(mContext, R.string.master_password_changed);
+                }
+            }
+            mDialog.dismiss();
+        });
+    }
 
     /**
      * This function removes the password for encrypted files.
@@ -245,6 +322,36 @@ public class PDFEncryptionUtility {
 
         return false;
     }
+    private boolean removePasswordUsingDefMasterPassword(final String file,
+                                                         final String[] inputPassword) {
+        String finalOutputFile;
+        try {
+            String masterPwd = mSharedPrefs.getString(MASTER_PWD_STRING, appName);
+            PdfReader reader = new PdfReader(file, masterPwd.getBytes());
+            byte[] password;
+            finalOutputFile = mFileUtils.getUniqueFileName
+                    (file.replace(mContext.getResources().getString(R.string.pdf_ext),
+                            mContext.getString(R.string.decrypted_file)));
+            password = reader.computeUserPassword();
+            byte[] input = inputPassword[0].getBytes();
+            if (Arrays.equals(input, password)) {
+                PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(finalOutputFile));
+                stamper.close();
+                reader.close();
+                new DatabaseHelper(mContext).insertRecord(finalOutputFile, mContext.getString(R.string.decrypted));
+                final String filepath = finalOutputFile;
+                StringUtils.getInstance().getSnackbarwithAction(mContext, R.string.snackbar_pdfCreated)
+                        .setAction(R.string.snackbar_viewAction,
+                                v2 -> mFileUtils.openFile(filepath, FileUtils.FileType.e_PDF)).show();
+                return true;
+            }
+        } catch (DocumentException | IOException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
 
 
     private boolean removePasswordUsingInputMasterPassword(final String file,
@@ -261,6 +368,30 @@ public class PDFEncryptionUtility {
             reader.close();
             if (dataSetChanged != null)
                 dataSetChanged.updateDataset();
+            new DatabaseHelper(mContext).insertRecord(finalOutputFile, mContext.getString(R.string.decrypted));
+            final String filepath = finalOutputFile;
+            StringUtils.getInstance().getSnackbarwithAction(mContext, R.string.snackbar_pdfCreated)
+                    .setAction(R.string.snackbar_viewAction, v2 ->
+                            mFileUtils.openFile(filepath, FileUtils.FileType.e_PDF)).show();
+            return true;
+
+        } catch (DocumentException | IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private boolean removePasswordUsingInputMasterPassword(final String file,
+                                                           final String[] inputPassword) {
+        String finalOutputFile;
+        try {
+            PdfReader reader = new PdfReader(file, inputPassword[0].getBytes());
+            finalOutputFile = mFileUtils.getUniqueFileName(
+                    file.replace(mContext.getResources().getString(R.string.pdf_ext),
+                            mContext.getString(R.string.decrypted_file)));
+            PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(finalOutputFile));
+            stamper.close();
+            reader.close();
             new DatabaseHelper(mContext).insertRecord(finalOutputFile, mContext.getString(R.string.decrypted));
             final String filepath = finalOutputFile;
             StringUtils.getInstance().getSnackbarwithAction(mContext, R.string.snackbar_pdfCreated)

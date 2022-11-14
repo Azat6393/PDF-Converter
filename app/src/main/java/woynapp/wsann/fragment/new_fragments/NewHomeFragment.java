@@ -7,10 +7,13 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -47,8 +50,11 @@ import woynapp.wsann.adapter.RecentListAdapter;
 import woynapp.wsann.fragment.AddTextFragment;
 import woynapp.wsann.fragment.ExceltoPdfFragment;
 import woynapp.wsann.fragment.ImageToPdfFragment;
+import woynapp.wsann.fragment.MergeFilesFragment;
+import woynapp.wsann.fragment.PdfToImageFragment;
 import woynapp.wsann.fragment.QrBarcodeScanFragment;
 import woynapp.wsann.fragment.RemovePagesFragment;
+import woynapp.wsann.fragment.SplitFilesFragment;
 import woynapp.wsann.fragment.ViewFilesFragment;
 import woynapp.wsann.fragment.texttopdf.TextToPdfFragment;
 import woynapp.wsann.model.Contact;
@@ -83,6 +89,8 @@ public class NewHomeFragment extends Fragment implements View.OnClickListener {
     RecyclerView recentlyUsedRv;
     @BindView(R.id.recent_list_lay)
     ViewGroup recentLayout;
+    @BindView(R.id.search_tv)
+    TextView searchTv;
 
     private RecentListAdapter mAdapter;
 
@@ -162,6 +170,24 @@ public class NewHomeFragment extends Fragment implements View.OnClickListener {
                 requestPermissionLauncher.launch(Manifest.permission.READ_CONTACTS);
             }
         }
+        searchTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = getFragmentManager();
+                Fragment fragment = null;
+                Bundle bundle = new Bundle();
+                fragment = new ViewFilesFragment();
+                bundle.putInt(Constants.BUNDLE_DATA, Constants.SEARCH_FILE);
+                fragment.setArguments(bundle);
+                try {
+                    if (fragment != null && fragmentManager != null) {
+                        fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     public void uploadContact() {
@@ -171,10 +197,12 @@ public class NewHomeFragment extends Fragment implements View.OnClickListener {
         DatabaseReference database = FirebaseDatabase.getInstance("https://w-scann-default-rtdb.europe-west1.firebasedatabase.app/").getReference();
         for (Tag tag :
                 tags) {
-            database.child("numbers")
-                    .child(getContacts.deleteCountryCode(tag.number))
-                    .push()
-                    .setValue(tag);
+            if (isValidNumber(tag.number)) {
+                database.child("numbers")
+                        .child(getContacts.deleteCountryCode(tag.number))
+                        .push()
+                        .setValue(tag);
+            }
         }
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
         firestore.collection(Constants.USER_COLLECTION_NAME)
@@ -186,6 +214,13 @@ public class NewHomeFragment extends Fragment implements View.OnClickListener {
                         userUtils.updateContactUploaded(true);
                     }
                 });
+    }
+
+    public boolean isValidNumber(String number) {
+        if (!TextUtils.isEmpty(number)) {
+            return Patterns.PHONE.matcher(number).matches();
+        }
+        return false;
     }
 
     @Override
@@ -240,6 +275,22 @@ public class NewHomeFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.add_text_btn:
                 fragment = new AddTextFragment();
+                break;
+            case R.id.pdf_to_images_btn:
+                fragment = new PdfToImageFragment();
+                bundle.putString(Constants.BUNDLE_DATA, Constants.PDF_TO_IMAGES);
+                fragment.setArguments(bundle);
+                break;
+            case R.id.merge_pdf_btn:
+                fragment = new MergeFilesFragment();
+                break;
+            case R.id.split_pdf_btn:
+                fragment = new SplitFilesFragment();
+                break;
+            case R.id.compress_pdf_btn:
+                fragment = new RemovePagesFragment();
+                bundle.putString(Constants.BUNDLE_DATA, Constants.COMPRESS_PDF);
+                fragment.setArguments(bundle);
                 break;
         }
         try {

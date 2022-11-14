@@ -47,12 +47,12 @@
     <string name="sign_in">Oturum aç</string>
     <string name="sign_up">Kayt ol</string>
     <string name="enter_your_email_address">E-posta</string>
-    <string name="password">Parola</string>
+    <string name="password">Şifre</string>
     <string name="confirm_password">Şifreyi onayla</string>
     <string name="please_enter_email">Lütfen e-posta adresinizi girin</string>
     <string name="confirm_password_message">Parola ve onay parolası aynı olmalıdır</string>
     <string name="name">Ad</string>
-    <string name="last_name">Soyadı</string>
+    <string name="last_name">Soyad</string>
     <string name="please_enter_name">Lütfen adınızı ve soyadınızı girin</string>
     <string name="log_out">Çıkış</string>
     <string name="dialog_message">Oturumu sonlandırmak istediğinizden emin misiniz</string>
@@ -523,6 +523,24 @@
     <string name="delete_alert_singular">Seçili dosyayı silmek istediğinizden emin misiniz?</string>
     <string name="snackbar_files_deleted">Dosyalar Silindi</string>
     <string name="lbl_recently_used">Son Kullanılan Özellikler</string>
+
+    <string name="please_accept_permission">Lütfen Gizlilik Politikasını kabul edin</string>
+
+
+    <string name="our_commitment_to_protecting_your_privacy">Gizliliğinizi koruma taahhüdümüz</string>
+    <string name="please_scroll_below">Gizlilik Politikamızın ve Hizmet Şartlarımızın önemli noktalarını incelemek için lütfen aşağı kaydırın</string>
+    <string name="amp"><![CDATA[&]]></string>
+    <string name="agree_and_continue">Kabul Et ve Devam Et</string>
+    <string name="we_use_data_for_the_following_purposes">Verilerinizi, belirtilen şu amaçlarla kullanıyoruz:
+\n\n • Hizmetlerimizi etkinleştirmek, optimize etmek, kişiselleştirmek, sunmak ve iyileştirme.
+\n\n\n Etiketler ve saklanan mevcut verileriniz:
+\n\n • Rehberinizdeki kişiler herhangi başka bir yere yüklenmez ve halka açık hale getirilmez.
+        \n\n\n Kabul etmek istemiyorsanız W Scann ı kaldırabilirsiniz.</string>
+    <string name="term_of_service">Hizmet Şartları</string>
+
+    <string name="print">Yazdır</string>
+    <string name="rename">Isini değiştir</string>
+    <string name="delete_password">Şifreyi sil</string>
 
     <!--  FAQs  -->
     <string-array name="faq_question_answers">

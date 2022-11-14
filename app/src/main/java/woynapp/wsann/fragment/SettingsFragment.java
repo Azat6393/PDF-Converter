@@ -73,6 +73,7 @@ import woynapp.wsann.adapter.ProfileSettingsAdapter;
 import woynapp.wsann.interfaces.OnItemClickListener;
 import woynapp.wsann.model.EnhancementOptionsEntity;
 import woynapp.wsann.model.User;
+import woynapp.wsann.util.CircleTransform;
 import woynapp.wsann.util.Constants;
 import woynapp.wsann.util.DialogUtils;
 import woynapp.wsann.util.ImageUtils;
@@ -119,8 +120,10 @@ public class SettingsFragment extends Fragment implements OnItemClickListener, V
                     selectedUri = uri;
                     Picasso.with(requireContext())
                             .load(uri)
+                            .resize(800, 0)
                             .placeholder(R.drawable.avatar_icon)
                             .error(R.drawable.avatar_icon)
+                            .transform(new CircleTransform())
                             .into(profilePhoto);
                     if (uri == null || uri.equals("")){
                         if (!user.getUser_photo().equals("") && user.getUser_photo() != null) {
@@ -167,8 +170,10 @@ public class SettingsFragment extends Fragment implements OnItemClickListener, V
         if (!user.getUser_photo().equals("") && user.getUser_photo() != null) {
             Picasso.with(requireContext())
                     .load(user.getUser_photo())
+                    .resize(800, 0)
                     .placeholder(R.drawable.avatar_icon)
                     .error(R.drawable.avatar_icon)
+                    .transform(new CircleTransform())
                     .into(profilePhoto);
         }
 

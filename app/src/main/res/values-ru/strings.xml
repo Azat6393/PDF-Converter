@@ -485,4 +485,22 @@
     <string name="delete_alert_singular">Вы хотите удалить выбранный файл?</string>
     <string name="snackbar_files_deleted">Файлы удалены</string>
   <string name="lbl_recently_used">Недавно использованная особенность</string>
+
+    <string name="please_accept_permission">Пожалуйста, примите согласие на Политику конфиденциальности</string>
+
+
+    <string name="our_commitment_to_protecting_your_privacy">Нашa задача - защита вашей конфиденциальности</string>
+    <string name="please_scroll_below">Пожалуйста, прокрутите вниз, чтобы ознакомиться с ключевыми пунктами нашей Политики конфиденциальности и Условия обслуживания</string>
+    <string name="amp"><![CDATA[&]]></string>
+    <string name="agree_and_continue">Согласиться и продолжить</string>
+    <string name="we_use_data_for_the_following_purposes">Мы используем Ваши данные строго в целях, изложенных в нашем Положении о конфиденциальности, в том числе:\n\n • Активизация, оптимизация, персонализация, предоставление наших услуг и их улучшение.
+\n\n\n Теги и Ваши текущие сохраненные данные:
+\n\n • Ваши контакты не загружаются и не публикуются.
+\n\n\n Если Вы не хотите принимать эти условия, Вы можете удалить W Scann..</string>
+    <string name="term_of_service">Условия обслуживания</string>
+
+    <string name="print">Печать</string>
+    <string name="rename">Переименовать</string>
+    <string name="delete_password">Удалить пароль</string>
+
 </resources>

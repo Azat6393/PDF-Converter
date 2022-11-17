@@ -2,28 +2,20 @@ package woynapp.wsann.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.text.Layout;
-import android.text.StaticLayout;
 import android.text.TextPaint;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -33,18 +25,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.graphics.drawable.DrawableCompat;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.danielnilsson9.colorpickerview.view.ColorPickerView;
 import com.google.android.material.appbar.MaterialToolbar;
-import com.itextpdf.text.BaseColor;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -76,6 +63,7 @@ public class AddTextActivity extends AppCompatActivity {
     float xDown = 0, yDown = 0;
 
     private int mTextColor;
+    private boolean isEdited = false;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -121,6 +109,9 @@ public class AddTextActivity extends AppCompatActivity {
 
                         addTextLayout.setX(addTextLayout.getX() + distanceX);
                         addTextLayout.setY(addTextLayout.getY() + distanceY);
+
+                        textEditText.setX(textEditText.getX() + distanceX);
+                        textEditText.setY(textEditText.getY() + distanceY);
                         break;
                 }
                 return true;
@@ -152,14 +143,26 @@ public class AddTextActivity extends AppCompatActivity {
     }
 
     public void saveButtonClicked() {
-        if (!textEditText.getText().toString().equals("")) {
             try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), mCroppedImageUris.get(mCurrentImageIndex));
-                mCropImageView.setImageBitmap(textAsBitmap(bitmap, textEditText.getText().toString(), 45f, mTextColor));
+                if (textEditText.getText().toString().equals("") && isEdited) {
+                    if (mFinishedClicked){
+                        Intent intent = new Intent();
+                        intent.putExtra(PdfViewerActivity.INTENT_RESULT_GET_ADD_TEXT, mCroppedImageUris);
+                        setResult(Activity.RESULT_OK, intent);
+                        finish();
+                    }
+                }else {
+                    if (!textEditText.getText().toString().equals("")){
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), mCroppedImageUris.get(mCurrentImageIndex));
+                        mCropImageView.setImageBitmap(textAsBitmap(bitmap, textEditText.getText().toString(), 45f, mTextColor));
+                        textEditText.setText("");
+                        isEdited = true;
+                    }
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
+
     }
 
     private Bitmap textAsBitmap(Bitmap image, String text,
@@ -182,16 +185,30 @@ public class AddTextActivity extends AppCompatActivity {
         final int actH = Math.round(origH * scaleY);
 
         Bitmap newMapBitmap = Bitmap.createBitmap(actW, actH, Bitmap.Config.ARGB_8888);
-
         try {
+            Bitmap newBitmap = Bitmap.createBitmap(mCropImageView.getWidth(), mCropImageView.getHeight(), Bitmap.Config.ARGB_8888);
             Bitmap newImage = image.copy(Bitmap.Config.ARGB_8888, false);
-            Canvas canvas = new Canvas(newMapBitmap);
-            Rect dest = new Rect(0, 0, actW, actH);
+
+            Canvas canvas = new Canvas(newBitmap);
+
+            Point centerOfCanvas = new Point(canvas.getWidth() / 2, canvas.getHeight() / 2);
+            int left = centerOfCanvas.x - (actW / 2);
+            int top = centerOfCanvas.y - (actH / 2);
+            int right = centerOfCanvas.x + (actW / 2);
+            int bottom = centerOfCanvas.y + (actH / 2);
+
+            Rect dest = new Rect(left, top, right, bottom);
+
             Paint paint2 = new Paint();
             paint.setFilterBitmap(true);
             canvas.drawBitmap(newImage, null, dest, paint2);
 
             canvas.drawText(text, addTextLayout.getX(), addTextLayout.getY(), paint);
+
+            Canvas canvas1 = new Canvas(newMapBitmap);
+            int centreX = (canvas1.getWidth()  - newBitmap.getWidth()) /2;
+            int centreY = (canvas1.getHeight() - newBitmap.getHeight()) /2;
+            canvas1.drawBitmap(newBitmap, centreX, centreY, paint2);
 
         } catch (Exception e) {
             Log.e("textAsBitmap", e.getMessage());
@@ -312,6 +329,20 @@ public class AddTextActivity extends AppCompatActivity {
             }
         }
         mImages.clear();
+        isEdited = false;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        for (Uri imagePath : mCroppedImageUris.values()) {
+            File file = new File(imagePath.getPath());
+            if (file.exists()) {
+                file.delete();
+            }
+        }
+        mImages.clear();
+        isEdited = false;
     }
 
     private void setTextColor() {

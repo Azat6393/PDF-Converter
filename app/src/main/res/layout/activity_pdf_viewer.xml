@@ -85,7 +85,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/crop_image_menu_crop"
+                android:text="@string/crop"
                 android:textColor="?attr/secondary"
                 android:autoSizeMinTextSize="10sp"
                 android:autoSizeMaxTextSize="12sp"

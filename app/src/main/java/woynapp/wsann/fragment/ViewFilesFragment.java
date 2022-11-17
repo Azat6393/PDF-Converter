@@ -516,7 +516,6 @@ public class ViewFilesFragment extends Fragment
     public void onStart() {
         super.onStart();
         populatePdfList(null);
-
         int dialogId;
         if (getArguments() != null) {
             dialogId = getArguments().getInt(Constants.BUNDLE_DATA);

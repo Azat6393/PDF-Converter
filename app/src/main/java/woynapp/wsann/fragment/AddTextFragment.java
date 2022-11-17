@@ -245,7 +245,6 @@ public class AddTextFragment extends Fragment implements MergeFilesAdapter.OnCli
             mTextPath = NewRealPathUtil.getRealPath(getActivity().getApplicationContext(), data.getData());
             StringUtils.getInstance().showSnackbar(mActivity, getResources().getString(R.string.snackbar_txtselected));
         }
-        System.out.println(mPdfpath + "   " + mTextPath);
         if (mPdfpath != null && mTextPath != null)
             setTextAndActivateButtons(mPdfpath, mTextPath);
     }

@@ -539,8 +539,10 @@
     <string name="term_of_service">Hizmet Şartları</string>
 
     <string name="print">Yazdır</string>
-    <string name="rename">Isini değiştir</string>
+    <string name="rename">Ismini değiştir</string>
     <string name="delete_password">Şifreyi sil</string>
+    <string name="crop">Kırpma</string>
+
 
     <!--  FAQs  -->
     <string-array name="faq_question_answers">

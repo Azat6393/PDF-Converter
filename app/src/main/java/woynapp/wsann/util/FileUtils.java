@@ -74,6 +74,11 @@ public class FileUtils {
         uris.add(uri);
         shareFile(uris);
     }
+    public void shareFile(Uri uri) {
+        ArrayList<Uri> uris = new ArrayList<>();
+        uris.add(uri);
+        shareFile(uris);
+    }
 
     /**
      * Share the desired PDFs using application of choice by user

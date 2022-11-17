@@ -1,11 +1,16 @@
 package woynapp.wsann.util;
 
+import static woynapp.wsann.util.Constants.IMAGE_SCALE_TYPE_ASPECT_RATIO;
+import static woynapp.wsann.util.Constants.pdfExtension;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.pdf.PdfDocument;
 import android.os.AsyncTask;
-import androidx.annotation.NonNull;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
@@ -26,13 +31,10 @@ import woynapp.wsann.interfaces.OnPDFCreatedInterface;
 import woynapp.wsann.model.ImageToPDFOptions;
 import woynapp.wsann.model.Watermark;
 
-import static woynapp.wsann.util.Constants.IMAGE_SCALE_TYPE_ASPECT_RATIO;
-import static woynapp.wsann.util.Constants.pdfExtension;
-
 /**
  * An async task that converts selected images to Pdf
  */
-public class CreatePdf extends AsyncTask<String, String, String> {
+public class CreatePdfCustomSize extends AsyncTask<String, String, String> {
 
     private final String mFileName;
     private final String mPassword;
@@ -55,8 +57,8 @@ public class CreatePdf extends AsyncTask<String, String, String> {
     private final String mMasterPwd;
     private final int mPageColor;
 
-    public CreatePdf(ImageToPDFOptions mImageToPDFOptions, String parentPath,
-                     OnPDFCreatedInterface onPDFCreated) {
+    public CreatePdfCustomSize(ImageToPDFOptions mImageToPDFOptions, String parentPath,
+                               OnPDFCreatedInterface onPDFCreated) {
         this.mImagesUri = mImageToPDFOptions.getImagesUri();
         this.mFileName = mImageToPDFOptions.getOutFileName();
         this.mPassword = mImageToPDFOptions.getPassword();
@@ -97,80 +99,23 @@ public class CreatePdf extends AsyncTask<String, String, String> {
 
         setFilePath();
 
-        Log.v("stage 1", "store the pdf in sd card");
-
-        Rectangle pageSize = new Rectangle(PageSize.getRectangle(mPageSize));
-        pageSize.setBackgroundColor(getBaseColor(mPageColor));
-        Document document = new Document(pageSize,
-                mMarginLeft, mMarginRight, mMarginTop, mMarginBottom);
-        Log.v("stage 2", "Document Created");
-        document.setMargins(mMarginLeft, mMarginRight, mMarginTop, mMarginBottom);
-        Rectangle documentRect = document.getPageSize();
+        PdfDocument pdfDocument = new PdfDocument();
 
         try {
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(mPath));
-
-            Log.v("Stage 3", "Pdf writer");
-
-            if (mPasswordProtected) {
-                writer.setEncryption(mPassword.getBytes(), mMasterPwd.getBytes(),
-                        PdfWriter.ALLOW_PRINTING | PdfWriter.ALLOW_COPY,
-                        PdfWriter.ENCRYPTION_AES_128);
-
-                Log.v("Stage 3.1", "Set Encryption");
-            }
-
-            if (mWatermarkAdded) {
-                WatermarkPageEvent watermarkPageEvent = new WatermarkPageEvent();
-                watermarkPageEvent.setWatermark(mWatermark);
-                writer.setPageEvent(watermarkPageEvent);
-            }
-
-            document.open();
-
-            Log.v("Stage 4", "Document opened");
 
             for (int i = 0; i < mImagesUri.size(); i++) {
-                int quality;
-                quality = 30;
-                if (StringUtils.getInstance().isNotEmpty(mQualityString)) {
-                    quality = Integer.parseInt(mQualityString);
-                }
-                Image image = Image.getInstance(mImagesUri.get(i));
-                // compressionLevel is a value between 0 (best speed) and 9 (best compression)
-                double qualityMod = quality * 0.09;
-                image.setCompressionLevel((int) qualityMod);
-                image.setBorder(Rectangle.BOX);
-                image.setBorderWidth(mBorderWidth);
-
-                Log.v("Stage 5", "Image compressed " + qualityMod);
 
                 BitmapFactory.Options bmOptions = new BitmapFactory.Options();
                 Bitmap bitmap = BitmapFactory.decodeFile(mImagesUri.get(i), bmOptions);
-
-                Log.v("Stage 6", "Image path adding");
-
-                float pageWidth = document.getPageSize().getWidth() - (mMarginLeft + mMarginRight);
-                float pageHeight = document.getPageSize().getHeight() - (mMarginBottom + mMarginTop);
-                if (mImageScaleType.equals(IMAGE_SCALE_TYPE_ASPECT_RATIO))
-                    image.scaleToFit(pageWidth, pageHeight);
-                else
-                    image.scaleAbsolute(pageWidth, pageHeight);
-
-                image.setAbsolutePosition(
-                        (documentRect.getWidth() - image.getScaledWidth()) / 2,
-                        (documentRect.getHeight() - image.getScaledHeight()) / 2);
-
-                Log.v("Stage 7", "Image Alignments");
-                addPageNumber(documentRect, writer);
-                document.add(image);
-
-                document.newPage();
+                PdfDocument.PageInfo myPageInfo = new PdfDocument.PageInfo.Builder(bitmap.getWidth(), bitmap.getHeight(), i + 1).create();
+                PdfDocument.Page page = pdfDocument.startPage(myPageInfo);
+                page.getCanvas().drawBitmap(bitmap, 0, 0, null);
+                pdfDocument.finishPage(page);
             }
 
             Log.v("Stage 8", "Image adding");
 
-            document.close();
+            pdfDocument.writeTo(new FileOutputStream(mPath));
 
             Log.v("Stage 7", "Document Closed" + mPath);
 

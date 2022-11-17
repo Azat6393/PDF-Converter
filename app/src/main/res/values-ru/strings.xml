@@ -502,5 +502,7 @@
     <string name="print">Печать</string>
     <string name="rename">Переименовать</string>
     <string name="delete_password">Удалить пароль</string>
+    <string name="crop">Oбрезать</string>
+
 
 </resources>

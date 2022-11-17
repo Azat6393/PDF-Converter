@@ -3,19 +3,23 @@ package woynapp.wsann.activity;
 import static woynapp.wsann.util.Constants.AUTHORITY_APP;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.OpenableColumns;
 import android.text.InputType;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
@@ -28,10 +32,17 @@ import androidx.core.content.FileProvider;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.barteksc.pdfviewer.PDFView;
-import com.github.danielnilsson9.colorpickerview.view.ColorPickerView;
+import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle;
+import com.github.barteksc.pdfviewer.util.FitPolicy;
 import com.theartofdev.edmodo.cropper.CropImage;
 
+import org.apache.poi.util.IOUtils;
+
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -39,13 +50,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import woynapp.wsann.R;
 import woynapp.wsann.database.DatabaseHelper;
-import woynapp.wsann.fragment.ImageToPdfFragment;
 import woynapp.wsann.fragment.new_fragments.UpdateScreenListener;
 import woynapp.wsann.interfaces.ExtractImagesListener;
 import woynapp.wsann.interfaces.OnPDFCreatedInterface;
 import woynapp.wsann.model.ImageToPDFOptions;
 import woynapp.wsann.util.Constants;
-import woynapp.wsann.util.CreatePdf;
+import woynapp.wsann.util.CreatePdfCustomSize;
 import woynapp.wsann.util.DialogUtils;
 import woynapp.wsann.util.FileUtils;
 import woynapp.wsann.util.ImageUtils;
@@ -54,7 +64,6 @@ import woynapp.wsann.util.PDFRotationUtils;
 import woynapp.wsann.util.PDFUtils;
 import woynapp.wsann.util.PageSizeUtils;
 import woynapp.wsann.util.PdfToImages;
-import woynapp.wsann.util.RealPathUtil;
 import woynapp.wsann.util.StringUtils;
 import woynapp.wsann.util.ThemeUtils;
 import woynapp.wsann.util.WatermarkUtils;
@@ -81,9 +90,9 @@ public class PdfViewerActivity extends AppCompatActivity implements View.OnClick
     PDFView pdfView;
 
     private File mFile;
+    private Uri fileUri;
 
     private FrameLayout progressBar;
-
 
     private String[] mInputPassword;
 
@@ -127,12 +136,6 @@ public class PdfViewerActivity extends AppCompatActivity implements View.OnClick
         pdfView = findViewById(R.id.pdfViewer);
         mHomePath = mSharedPreferences.getString(Constants.STORAGE_LOCATION,
                 StringUtils.getInstance().getDefaultStorageLocation());
-        initPdfViewer();
-
-    }
-
-    private void initPdfViewer() {
-        cropMode = 0;
         Intent intent = getIntent();
         String path = intent.getStringExtra("pdf_viewer");
         if (path.equals("")) {
@@ -140,14 +143,77 @@ public class PdfViewerActivity extends AppCompatActivity implements View.OnClick
         } else {
             File file = new File(path);
             mFile = file;
-            if (mPDFUtils.isPDFEncrypted(mFile.getPath())){
-                showPasswordDialog();
-            }else {
-                setPDF();
-            }
+            initPdfViewer();
         }
     }
-    private void showPasswordDialog(){
+
+    private void initPdfViewer() {
+        fileUri = getIntent().getData();
+        if (fileUri == null) {
+            cropMode = 0;
+        } else {
+            mFile = getFilePathFromURI(this, fileUri);
+        }
+        if (mPDFUtils.isPDFEncrypted(mFile.getPath())) {
+            showPasswordDialog();
+        } else {
+            setPDF();
+        }
+    }
+
+
+    public String getFileName(Uri uri) {
+        String result = null;
+        if (uri.getScheme() != null && uri.getScheme().equals("content")) {
+            try (Cursor cursor = getContentResolver().query(uri, null, null, null, null)) {
+                if (cursor != null && cursor.moveToFirst()) {
+                    int indexDisplayName = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                    if (indexDisplayName != -1) {
+                        result = cursor.getString(indexDisplayName);
+                    }
+                }
+            } catch (Exception e) {
+                Log.w("TAG", "Couldn't retrieve file name", e);
+            }
+        }
+        if (result == null) {
+            result = uri.getLastPathSegment();
+        }
+        return result;
+    }
+
+    public File getFilePathFromURI(Context context, Uri contentUri) {
+        mHomePath = mSharedPreferences.getString(Constants.STORAGE_LOCATION,
+                StringUtils.getInstance().getDefaultStorageLocation());
+        String fileName = getFileName(contentUri);
+        if (!TextUtils.isEmpty(fileName)) {
+            File copyFile = new File(mHomePath + fileName);
+            if (copyFile.exists()) {
+                return copyFile;
+            } else {
+                copy(context, contentUri, copyFile);
+            }
+            return copyFile;
+        }
+        return null;
+    }
+
+    public void copy(Context context, Uri srcUri, File dstFile) {
+        try {
+            InputStream inputStream = context.getContentResolver().openInputStream(srcUri);
+            if (inputStream == null) return;
+            OutputStream outputStream = new FileOutputStream(dstFile);
+            IOUtils.copy(inputStream, outputStream);
+            inputStream.close();
+            outputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showPasswordDialog() {
         mInputPassword = new String[1];
         new MaterialDialog.Builder(this)
                 .title(R.string.enter_password)
@@ -165,15 +231,22 @@ public class PdfViewerActivity extends AppCompatActivity implements View.OnClick
                 .show();
     }
 
-    private void setPDF(){
+    private void setPDF() {
         try {
             Uri uri = FileProvider.getUriForFile(this, AUTHORITY_APP, mFile);
 
+            pdfView.setBackgroundColor(Color.LTGRAY);
             pdfView.fromUri(uri)
+                    .enableAnnotationRendering(true)
+                    .enableAntialiasing(true)
+                    .scrollHandle(new DefaultScrollHandle(this))
+                    .spacing(10)
+                    .pageFitPolicy(FitPolicy.WIDTH)
                     .swipeHorizontal(false)
-                    .pageSnap(true)
-                    .autoSpacing(true)
-                    .pageFling(true)
+                    .autoSpacing(false)
+                    .pageSnap(false)
+                    .pageFling(false)
+                    .nightMode(false)
                     .load();
 
         } catch (Exception e) {
@@ -181,16 +254,23 @@ public class PdfViewerActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-    private void setPDF(String password){
+    private void setPDF(String password) {
         try {
             Uri uri = FileProvider.getUriForFile(this, AUTHORITY_APP, mFile);
 
+            pdfView.setBackgroundColor(Color.LTGRAY);
             pdfView.fromUri(uri)
+                    .enableAnnotationRendering(true)
+                    .enableAntialiasing(true)
+                    .scrollHandle(new DefaultScrollHandle(this))
+                    .spacing(10)
+                    .pageFitPolicy(FitPolicy.WIDTH)
                     .swipeHorizontal(false)
-                    .pageSnap(true)
-                    .autoSpacing(true)
+                    .autoSpacing(false)
+                    .pageSnap(false)
+                    .pageFling(false)
+                    .nightMode(false)
                     .password(password)
-                    .pageFling(true)
                     .load();
         } catch (Exception e) {
             StringUtils.getInstance().showSnackbar(this, R.string.error_open_file);
@@ -200,10 +280,10 @@ public class PdfViewerActivity extends AppCompatActivity implements View.OnClick
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_pdf_viewer, menu);
-        for(int i = 0; i < menu.size(); i++) {
+        for (int i = 0; i < menu.size(); i++) {
             MenuItem item = menu.getItem(i);
             SpannableString spanString = new SpannableString(menu.getItem(i).getTitle().toString());
-            spanString.setSpan(new ForegroundColorSpan(Color.BLACK), 0,     spanString.length(), 0); //fix the color to white
+            spanString.setSpan(new ForegroundColorSpan(Color.BLACK), 0, spanString.length(), 0); //fix the color to white
             item.setTitle(spanString);
         }
         return true;
@@ -267,7 +347,11 @@ public class PdfViewerActivity extends AppCompatActivity implements View.OnClick
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_pdf_viewer_share:
-                mFileUtils.shareFile(mFile);
+                if (fileUri != null) {
+                    mFileUtils.shareFile(fileUri);
+                } else {
+                    mFileUtils.shareFile(mFile);
+                }
                 break;
             case R.id.menu_pdf_viewer_print:
                 mFileUtils.printFile(mFile);
@@ -341,7 +425,7 @@ public class PdfViewerActivity extends AppCompatActivity implements View.OnClick
                 for (int i = 0; i < mImagesUri.size(); i++) {
                     if (croppedImageUris.get(i) != null) {
                         mImagesUri.set(i, croppedImageUris.get(i).getPath());
-                     }
+                    }
                 }
                 if (!mImagesUri.isEmpty()) {
                     imageToPdf(FileUtils.getFileName(mImagesUri.get(0)));
@@ -382,7 +466,7 @@ public class PdfViewerActivity extends AppCompatActivity implements View.OnClick
         mPdfOptions.setPageColor(mPageColor);
         mPdfOptions.setOutFileName(filename);
         String path = mFile.getPath();
-        new CreatePdf(mPdfOptions, path, this).execute();
+        new CreatePdfCustomSize(mPdfOptions, path, this).execute();
     }
 
     private void resetValues() {
@@ -436,15 +520,39 @@ public class PdfViewerActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onPDFCreationStarted() {
-
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onPDFCreated(boolean success, String path) {
-        String oldPath = mFile.getPath();
-        if (mFile.delete()) {
+        progressBar.setVisibility(View.GONE);
+
+        String oldPath = mFile.getPath().substring(0, mFile.getPath().lastIndexOf('/'))
+                + "/" + mFileUtils.getFileName(Uri.fromFile(mFile)) + ".W Scann" + this.getString(R.string.pdf_ext);
+        File oldFile = new File(oldPath);
+        if (oldFile.exists()) {
+            if (oldFile.delete()) {
+                File newFile = new File(path);
+                if (newFile.renameTo(oldFile)){
+                    mFile = new File(oldPath);
+                }
+                for (String imagePath : mImagesUri) {
+                    File file = new File(imagePath);
+                    if (file.exists()) {
+                        if (file.delete()) {
+                            System.out.println("image Deleted :");
+                        } else {
+                            System.out.println("image not Deleted :");
+                        }
+                    }
+                }
+            }
+        } else {
             File newFile = new File(path);
-            newFile.renameTo(new File(oldPath));
+            newFile.renameTo(oldFile);
+            if (newFile.renameTo(oldFile)){
+                mFile = new File(oldPath);
+            }
             for (String imagePath : mImagesUri) {
                 File file = new File(imagePath);
                 if (file.exists()) {
@@ -455,11 +563,10 @@ public class PdfViewerActivity extends AppCompatActivity implements View.OnClick
                     }
                 }
             }
-            mImagesUri.clear();
-            initPdfViewer();
         }
+        mImagesUri.clear();
+        initPdfViewer();
     }
-
 
 
     @Override

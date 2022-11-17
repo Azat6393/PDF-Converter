@@ -614,6 +614,7 @@
     <string name="print">Print</string>
     <string name="rename">Rename</string>
     <string name="delete_password">Delete password</string>
+    <string name="crop">Crop</string>
 
 
     <string-array name="faq_question_answers">

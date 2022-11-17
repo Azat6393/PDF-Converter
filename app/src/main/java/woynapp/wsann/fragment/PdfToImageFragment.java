@@ -177,7 +177,6 @@ public class PdfToImageFragment extends Fragment implements BottomSheetPopulate,
             //Getting Absolute Path
             String path = RealPathUtil.getInstance().getRealPath(getContext(), data.getData());
             setTextAndActivateButtons(path);
-
         }
     }
 

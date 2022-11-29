@@ -287,7 +287,7 @@ public class ViewFilesAdapter extends RecyclerView.Adapter<ViewFilesAdapter.View
             messageSnackbar = R.string.snackbar_file_deleted;
         }
 
-        AlertDialog.Builder dialogAlert = new AlertDialog.Builder(mActivity)
+        AlertDialog.Builder dialogAlert = new AlertDialog.Builder(mActivity, R.style.AlertDialog)
                 .setCancelable(true)
                 .setNegativeButton(R.string.cancel, (dialogInterface, i) -> dialogInterface.dismiss())
                 .setTitle(messageAlert)

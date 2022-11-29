@@ -208,7 +208,11 @@ public class AddTextFragment extends Fragment implements MergeFilesAdapter.OnCli
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             openPdfNameDialog_();
         } else {
-            getRuntimePermissions();
+            if (Build.VERSION.SDK_INT >= 33){
+                openPdfNameDialog_();
+            }else {
+                getRuntimePermissions();
+            }
         }
     }
 
@@ -238,6 +242,7 @@ public class AddTextFragment extends Fragment implements MergeFilesAdapter.OnCli
         if (data == null || resultCode != RESULT_OK || data.getData() == null)
             return;
         if (requestCode == INTENT_REQUEST_PICK_PDF_FILE_CODE) {
+            System.out.println(data.getData());
             mPdfpath = NewRealPathUtil.getRealPath(getActivity().getApplicationContext(), data.getData());
             StringUtils.getInstance().showSnackbar(mActivity, getResources().getString(R.string.snackbar_pdfselected));
         }

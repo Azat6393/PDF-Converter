@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.pdf.PdfRenderer;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -66,6 +67,8 @@ public class PDFUtils {
 
         TextView message = new TextView(mContext);
         TextView title = new TextView(mContext);
+        title.setTextColor(Color.BLACK);
+        message.setTextColor(Color.BLACK);
         message.setText(String.format
                 (mContext.getResources().getString(R.string.file_info), name, path, size, lastModDate));
         message.setTextIsSelectable(true);

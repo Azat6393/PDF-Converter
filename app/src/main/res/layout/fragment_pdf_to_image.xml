@@ -110,6 +110,7 @@
                     android:drawableTint="?attr/bottomSheetTextColor"
                     android:letterSpacing="0"
                     android:padding="15dp"
+                    android:visibility="gone"
                     android:text="@string/view_in_gallery"
                     android:textAllCaps="false"
                     android:textColor="?attr/bottomSheetTextColor"

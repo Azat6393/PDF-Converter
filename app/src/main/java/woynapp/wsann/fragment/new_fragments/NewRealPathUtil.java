@@ -9,10 +9,25 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
+import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.loader.content.CursorLoader;
 
+import org.apache.poi.util.IOUtils;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import woynapp.wsann.util.Constants;
+import woynapp.wsann.util.StringUtils;
+
 public class NewRealPathUtil {
+
 
     public static String getRealPath(Context context, Uri fileUri) {
         String realPath;
@@ -85,21 +100,28 @@ public class NewRealPathUtil {
                 final String docId = DocumentsContract.getDocumentId(uri);
                 final String[] split = docId.split(":");
                 final String type = split[0];
+                String path = null;
 
                 if ("primary".equalsIgnoreCase(type)) {
-                    return Environment.getExternalStorageDirectory() + "/" + split[1];
+                    if (split.length > 1) {
+                        path = Environment.getExternalStorageDirectory() + "/" + split[1];
+                    } else {
+                        path = Environment.getExternalStorageDirectory() + "/";
+                    }
+                } else {
+                    path = "storage" + "/" + docId.replace(":", "/");
                 }
-
-                // TODO handle non-primary volumes
+                return path;
             }
             // DownloadsProvider
             else if (isDownloadsDocument(uri)) {
 
-                final String id = DocumentsContract.getDocumentId(uri);
+                /*final String id = DocumentsContract.getDocumentId(uri);
                 final Uri contentUri = ContentUris.withAppendedId(
                         Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
 
-                return getDataColumn(context, contentUri, null, null);
+                return getDataColumn(context, contentUri, null, null);*/
+                return getFilePathFromURI(context, uri).getPath();
             }
             // MediaProvider
             else if (isMediaDocument(uri)) {
@@ -125,8 +147,10 @@ public class NewRealPathUtil {
 
                 return getDataColumn(context, contentUri, selection, selectionArgs);
             }
+        }else {
+            return getFilePathFromURI(context, uri).getPath();
         }
-        // MediaStore (and general)
+        /*// MediaStore (and general)
         else if ("content".equalsIgnoreCase(uri.getScheme())) {
 
             // Return the remote address
@@ -138,9 +162,59 @@ public class NewRealPathUtil {
         // File
         else if ("file".equalsIgnoreCase(uri.getScheme())) {
             return uri.getPath();
-        }
+        }*/
 
         return null;
+    }
+
+    public static File getFilePathFromURI(Context context, Uri contentUri) {
+        String mHomePath = StringUtils.getInstance().getDefaultStorageLocation();
+        String fileName = getFileName(contentUri, context);
+        if (!TextUtils.isEmpty(fileName)) {
+            File copyFile = new File(mHomePath + fileName);
+            if (copyFile.exists()) {
+                return copyFile;
+            } else {
+                copy(context, contentUri, copyFile);
+            }
+            return copyFile;
+        }
+        return null;
+    }
+
+    public static void copy(Context context, Uri srcUri, File dstFile) {
+        try {
+            InputStream inputStream = context.getContentResolver().openInputStream(srcUri);
+            if (inputStream == null) return;
+            OutputStream outputStream = new FileOutputStream(dstFile);
+            IOUtils.copy(inputStream, outputStream);
+            inputStream.close();
+            outputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String getFileName(Uri uri, Context context) {
+        String result = null;
+        if (uri.getScheme() != null && uri.getScheme().equals("content")) {
+            try (Cursor cursor = context.getContentResolver().query(uri, null, null, null, null)) {
+                if (cursor != null && cursor.moveToFirst()) {
+                    int indexDisplayName = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                    if (indexDisplayName != -1) {
+                        result = cursor.getString(indexDisplayName);
+                    }
+                }
+            } catch (Exception e) {
+                Log.w("TAG", "Couldn't retrieve file name", e);
+            }
+        }
+        if (result == null) {
+            result = uri.getLastPathSegment();
+        }
+        return result;
     }
 
     /**

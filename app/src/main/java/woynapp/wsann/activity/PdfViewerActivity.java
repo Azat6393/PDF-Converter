@@ -110,6 +110,8 @@ public class PdfViewerActivity extends AppCompatActivity implements View.OnClick
 
     private int cropMode = 0;
 
+    private boolean isEdited = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         ThemeUtils.getInstance().setThemeApp(this);
@@ -136,23 +138,32 @@ public class PdfViewerActivity extends AppCompatActivity implements View.OnClick
         pdfView = findViewById(R.id.pdfViewer);
         mHomePath = mSharedPreferences.getString(Constants.STORAGE_LOCATION,
                 StringUtils.getInstance().getDefaultStorageLocation());
-        Intent intent = getIntent();
-        String path = intent.getStringExtra("pdf_viewer");
-        if (path.equals("")) {
-            StringUtils.getInstance().showSnackbar(this, R.string.error_open_file);
-        } else {
-            File file = new File(path);
-            mFile = file;
-            initPdfViewer();
+        if (!isEdited){
+            Intent intent = getIntent();
+            String path = intent.getStringExtra("pdf_viewer");
+            System.out.println(path);
+            if (path == null || path.equals("")) {
+                if (getIntent().getData() == null){
+                    StringUtils.getInstance().showSnackbar(this, R.string.error_open_file);
+                }else {
+                    initPdfViewer();
+                }
+            } else {
+                File file = new File(path);
+                mFile = file;
+                initPdfViewer();
+            }
         }
     }
 
     private void initPdfViewer() {
-        fileUri = getIntent().getData();
-        if (fileUri == null) {
-            cropMode = 0;
-        } else {
-            mFile = getFilePathFromURI(this, fileUri);
+        if (!isEdited){
+            fileUri = getIntent().getData();
+            if (fileUri == null) {
+                cropMode = 0;
+            } else {
+                mFile = getFilePathFromURI(this, fileUri);
+            }
         }
         if (mPDFUtils.isPDFEncrypted(mFile.getPath())) {
             showPasswordDialog();
@@ -484,6 +495,7 @@ public class PdfViewerActivity extends AppCompatActivity implements View.OnClick
         ImageUtils.getInstance().mImageScaleType = mSharedPreferences.getString(Constants.DEFAULT_IMAGE_SCALE_TYPE_TEXT,
                 Constants.IMAGE_SCALE_TYPE_ASPECT_RATIO);
         mPdfOptions.setMargins(0, 0, 0, 0);
+        isEdited = false;
     }
 
     @Override
@@ -549,7 +561,6 @@ public class PdfViewerActivity extends AppCompatActivity implements View.OnClick
             }
         } else {
             File newFile = new File(path);
-            newFile.renameTo(oldFile);
             if (newFile.renameTo(oldFile)){
                 mFile = new File(oldPath);
             }
@@ -564,6 +575,7 @@ public class PdfViewerActivity extends AppCompatActivity implements View.OnClick
                 }
             }
         }
+        isEdited = true;
         mImagesUri.clear();
         initPdfViewer();
     }

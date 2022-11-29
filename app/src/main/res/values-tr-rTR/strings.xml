@@ -261,6 +261,17 @@
     <string name="select_text_file">Metin Dosyasını Seçin</string>
     <string name="install_file_manager">Lütfen bir Dosya Yöneticisi yükleyiniz</string>
 
+    <string name="converting_image_to_pdf">Görüntü PDF\'ye dönüştürülüyor</string>
+    <string name="converting_text_to_pdf">Metin PDF\'ye dönüştürülüyor</string>
+    <string name="converting_pdf_to_image">PDF resme dönüştürülüyor</string>
+    <string name="converting_excel_to_pdf">Excel PDF\'ye dönüştürülüyor</string>
+    <string name="adding_text_to_pdf">PDF\'ye metin ekleniyor</string>
+    <string name="compressing_pdf">PDF Sıkıştırılıyor</string>
+    <string name="adding_password">Şifre ekleniyor</string>
+    <string name="removing_password">Şifre siliniyor</string>
+    <string name="merging_pdf">PDF birleştiriliyor</string>
+    <string name="spliting_pdf">PDF bölünüyor</string>
+
     <!-- Text to PDF   -->
     <string name="text_to_pdf">"Metinden PDF'ye "</string>
     <string name="text_file_selected">Metin Dosyası Seçildi</string>
@@ -333,12 +344,18 @@
     <!-- Extract images -->
     <string name="extract_images">Resimleri Çıkar</string>
     <string name="extract_images_failed">Seçilmiş PDF\'de hiç resim bulunamadı.</string>
-    <string name="extract_images_success">Seçilmiş PDF\'de %1$d adet resim bulundu. Kök dizindeki PDF Dosyaları klasörüne kaydedilmiştir.</string>
+    <string name="extract_images_success">Seçilmiş PDF\'de %1$d adet resim bulundu. Kök dizindeki PDF Converter klasörüne kaydedilmiştir.</string>
+    <string name="compressed">sıkıştırılmış</string>
 
     <!--  Extract Text-->
     <string name="extract_text">Metin Çıkar</string>
     <string name="pdf_selected">PDF dosyası seçildi:</string>
     <string name="file_info">\n   Dosya İsmi : %1$s \n\n  Dosya Yolu : %2$s \n\n  Boyut : %3$s \n\n  Tarih Değiştirildi  %4$s"</string>
+
+    <string name="about_us_text">Kullanıcı dostu tasarımlarla, güncel ve yenilikçi teknolojileri bir araya getirerek, uyumlu ve kolaylık sağlayan uygulamaları ücretsiz bir şekilde sizlere sunuyoruz.</string>
+
+    <string name="w_scann_website">W Scann web sitesi</string>
+
 
     <!-- Text To PDF   FontFamily-->
     <string name="default_font_family_text">Yazı Tipi Ailesi (Varsayılan : %s)</string>
@@ -539,7 +556,7 @@
     <string name="term_of_service">Hizmet Şartları</string>
 
     <string name="print">Yazdır</string>
-    <string name="rename">Ismini değiştir</string>
+    <string name="rename">İsmini değiştir</string>
     <string name="delete_password">Şifreyi sil</string>
     <string name="crop">Kırpma</string>
 

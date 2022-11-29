@@ -7,10 +7,16 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
+
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.os.Environment;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,6 +59,7 @@ import woynapp.wsann.util.StringUtils;
 import woynapp.wsann.util.Constants;
 
 import static android.app.Activity.RESULT_OK;
+import static woynapp.wsann.util.Constants.AUTHORITY_APP;
 
 public class PdfToImageFragment extends Fragment implements BottomSheetPopulate, MergeFilesAdapter.OnClickListener,
         ExtractImagesListener, ExtractImagesAdapter.OnFileItemClickedListener, OnBackPressedInterface {
@@ -120,7 +127,7 @@ public class PdfToImageFragment extends Fragment implements BottomSheetPopulate,
     void onImagesInGalleryClick() {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
-        Uri imagesUri = Uri.parse("content:///storage/emulated/0/PDFfiles/");
+        Uri imagesUri = Uri.parse("content:///storage/emulated/0/PDF Converter/");
         intent.setDataAndType(imagesUri, "image/*");
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         startActivity(intent);
@@ -289,7 +296,7 @@ public class PdfToImageFragment extends Fragment implements BottomSheetPopulate,
      */
     @Override
     public void extractionStarted() {
-        mMaterialDialog = DialogUtils.getInstance().createAnimationDialog(mActivity);
+        mMaterialDialog = DialogUtils.getInstance().createCustomAnimationDialog(mActivity, getString(R.string.converting_pdf_to_image));
         mMaterialDialog.show();
     }
 
@@ -341,6 +348,7 @@ public class PdfToImageFragment extends Fragment implements BottomSheetPopulate,
                     Constants.REQUEST_CODE_FOR_WRITE_PERMISSION);
         }
     }
+
     @Override
     public void onStart() {
         super.onStart();

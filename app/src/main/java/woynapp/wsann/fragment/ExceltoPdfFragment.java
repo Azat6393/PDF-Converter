@@ -2,6 +2,7 @@ package woynapp.wsann.fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,6 +23,7 @@ import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -38,6 +40,7 @@ import woynapp.wsann.R;
 import woynapp.wsann.adapter.EnhancementOptionsAdapter;
 import woynapp.wsann.adapter.MergeFilesAdapter;
 import woynapp.wsann.database.DatabaseHelper;
+import woynapp.wsann.fragment.new_fragments.NewRealPathUtil;
 import woynapp.wsann.fragment.new_fragments.PopUpDialog;
 import woynapp.wsann.interfaces.BottomSheetPopulate;
 import woynapp.wsann.interfaces.OnItemClickListener;
@@ -205,7 +208,7 @@ public class ExceltoPdfFragment extends Fragment implements MergeFilesAdapter.On
         if (requestCode == mFileSelectCode) {
             if (resultCode == RESULT_OK) {
                 mExcelFileUri = data.getData();
-                mRealPath = RealPathUtil.getInstance().getRealPath(getContext(), mExcelFileUri);
+                mRealPath = NewRealPathUtil.getRealPath(getContext(), mExcelFileUri);
                 processUri();
             }
         }
@@ -235,10 +238,16 @@ public class ExceltoPdfFragment extends Fragment implements MergeFilesAdapter.On
     }
 
     private void processUri() {
+        ContentResolver contentResolver = requireContext().getContentResolver();
+        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+        String extension = mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(mExcelFileUri));
+
         mStringUtils.showSnackbar(mActivity, getResources().getString(R.string.excel_selected));
         String fileName = mFileUtils.getFileName(mExcelFileUri);
-        if (fileName != null && !fileName.endsWith(Constants.excelExtension) &&
-                !fileName.endsWith(Constants.excelWorkbookExtension)) {
+        if (fileName != null && !fileName.endsWith(Constants.excelExtension)
+                && !extension.equals("xls")
+                && !fileName.endsWith(Constants.excelWorkbookExtension)
+                && !extension.equals("xlsx")) {
             mStringUtils.showSnackbar(mActivity, R.string.extension_not_supported);
             return;
         }
@@ -270,7 +279,7 @@ public class ExceltoPdfFragment extends Fragment implements MergeFilesAdapter.On
 
     @Override
     public void onPDFCreationStarted() {
-        mMaterialDialog = DialogUtils.getInstance().createAnimationDialog(mActivity);
+        mMaterialDialog = DialogUtils.getInstance().createCustomAnimationDialog(mActivity, getString(R.string.converting_excel_to_pdf));
         mMaterialDialog.show();
     }
 

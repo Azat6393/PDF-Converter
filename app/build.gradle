@@ -92,6 +92,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:19.2.0'
     implementation 'com.google.firebase:firebase-firestore:21.4.0'
     implementation 'com.google.firebase:firebase-database:20.0.4'
+    implementation 'com.google.firebase:firebase-messaging:23.0.8'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
 
     // persistence room library - for db operations

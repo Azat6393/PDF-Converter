@@ -285,6 +285,18 @@
     <string name="select_text_file">Select Text File</string>
     <string name="install_file_manager">Please install a File Manager</string>
 
+    <string name="converting_image_to_pdf">Converting image to PDF</string>
+    <string name="converting_text_to_pdf">Converting text to PDF</string>
+    <string name="converting_pdf_to_image">Converting PDF to image</string>
+    <string name="converting_excel_to_pdf">Converting excel to PDF</string>
+    <string name="adding_text_to_pdf">Adding text to PDF</string>
+    <string name="compressing_pdf">Compressing PDF</string>
+    <string name="adding_password">Adding password</string>
+    <string name="removing_password">Removing password</string>
+    <string name="merging_pdf">Merging PDF</string>
+    <string name="spliting_pdf">Splitting PDF</string>
+
+
     <!-- Text to PDF   -->
     <string name="text_to_pdf">Text To PDF</string>
     <string name="text_file_selected">Text File Selected</string>
@@ -358,7 +370,7 @@
     <!-- Extract images -->
     <string name="extract_images">Extract Images</string>
     <string name="extract_images_failed">We couldn\'t find any images in the selected PDF.</string>
-    <string name="extract_images_success">We found %1$d image(s) in the selected PDF. They have been saved in the PDF Files folder in root directory.</string>
+    <string name="extract_images_success">We found %1$d image(s) in the selected PDF. They have been saved in the PDF Converter folder in root directory.</string>
 
 
     <!--  Extract Text-->
@@ -615,6 +627,10 @@
     <string name="rename">Rename</string>
     <string name="delete_password">Delete password</string>
     <string name="crop">Crop</string>
+    <string name="compressed">compressed</string>
+    <string name="w_scann_website">W Scann website</string>
+
+    <string name="about_us_text">By combining user-friendly designs with up-to-date and innovative technologies, we offer compatible and convenient applications free of charge.</string>
 
 
     <string-array name="faq_question_answers">

@@ -327,7 +327,7 @@ public class MergeFilesFragment extends Fragment implements MergeFilesAdapter.On
 
     @Override
     public void mergeStarted() {
-        mMaterialDialog = DialogUtils.getInstance().createAnimationDialog(mActivity);
+        mMaterialDialog = DialogUtils.getInstance().createCustomAnimationDialog(mActivity, getString(R.string.merging_pdf));
         mMaterialDialog.show();
     }
 

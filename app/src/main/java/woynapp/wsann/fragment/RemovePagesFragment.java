@@ -9,6 +9,8 @@ import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -56,6 +58,7 @@ import woynapp.wsann.util.Constants;
 import woynapp.wsann.util.FileInfoUtils;
 
 import static android.app.Activity.RESULT_OK;
+import static woynapp.wsann.util.Constants.AUTHORITY_APP;
 
 public class RemovePagesFragment extends Fragment implements MergeFilesAdapter.OnClickListener,
         OnPDFCompressedInterface, BottomSheetPopulate, OnBackPressedInterface, OnPdfReorderedInterface {
@@ -222,8 +225,16 @@ public class RemovePagesFragment extends Fragment implements MergeFilesAdapter.O
             if (check > 100 || check <= 0 || mPath == null) {
                 StringUtils.getInstance().showSnackbar(mActivity, R.string.invalid_entry);
             } else {
-                String outputPath = mPath.replace(mActivity.getString(R.string.pdf_ext),
-                        "_edited" + check + mActivity.getString(R.string.pdf_ext));
+                /*String outputPath = mPath.replace(mActivity.getString(R.string.pdf_ext),
+                        "_edited" + check + mActivity.getString(R.string.pdf_ext));*/
+                Uri uri = FileProvider.getUriForFile(requireContext(), AUTHORITY_APP, new File(mPath));
+
+                String outputPath = StringUtils.getInstance().getDefaultStorageLocation()
+                        + mFileUtils.getFileName(uri);
+                File compessFile = new File(outputPath);
+                if (compessFile.exists()){
+                    outputPath += "_" + getString(R.string.compressed);
+                }
                 mPDFUtils.compressPDF(mPath, outputPath, 100 - check, this);
             }
         } catch (NumberFormatException e) {
@@ -280,7 +291,7 @@ public class RemovePagesFragment extends Fragment implements MergeFilesAdapter.O
 
     @Override
     public void pdfCompressionStarted() {
-        mMaterialDialog = DialogUtils.getInstance().createAnimationDialog(mActivity);
+        mMaterialDialog = DialogUtils.getInstance().createCustomAnimationDialog(mActivity, getString(R.string.compressing_pdf));
         mMaterialDialog.show();
     }
 

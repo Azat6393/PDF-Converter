@@ -2,6 +2,7 @@ package woynapp.wsann.fragment.texttopdf;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -9,14 +10,18 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.dd.morphingbutton.MorphingButton;
@@ -94,7 +99,7 @@ public class TextToPdfFragment extends Fragment implements OnItemClickListener,
 
     private void addEnhancements() {
         mEnhancerList = new ArrayList<>();
-        for (final Enhancers enhancer: Enhancers.values()) {
+        for (final Enhancers enhancer : Enhancers.values()) {
             mEnhancerList.add(enhancer.getEnhancer(mActivity, this, mBuilder));
         }
     }
@@ -106,7 +111,7 @@ public class TextToPdfFragment extends Fragment implements OnItemClickListener,
         GridLayoutManager mGridLayoutManager = new GridLayoutManager(mActivity, 2);
         mTextEnhancementOptionsRecycleView.setLayoutManager(mGridLayoutManager);
         List<EnhancementOptionsEntity> optionsEntityist = new ArrayList<>();
-        for (Enhancer enhancer: mEnhancerList) {
+        for (Enhancer enhancer : mEnhancerList) {
             optionsEntityist.add(enhancer.getEnhancementOptionsEntity());
         }
         mTextEnhancementOptionsAdapter = new EnhancementOptionsAdapter(this, optionsEntityist);
@@ -204,11 +209,17 @@ public class TextToPdfFragment extends Fragment implements OnItemClickListener,
                 StringUtils.getInstance().showSnackbar(mActivity, R.string.text_file_selected);
                 String fileName = mFileUtils.getFileName(mTextFileUri);
                 if (fileName != null) {
-                    if (fileName.endsWith(Constants.textExtension))
+                    ContentResolver contentResolver = requireContext().getContentResolver();
+                    MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+                    String extension = mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(data.getData()));
+                    if (fileName.endsWith(Constants.textExtension)
+                            || extension.equals("txt"))
                         mFileExtension = Constants.textExtension;
-                    else if (fileName.endsWith(Constants.docxExtension))
+                    else if (fileName.endsWith(Constants.docxExtension)
+                            || extension.equals("docx"))
                         mFileExtension = Constants.docxExtension;
-                    else if (fileName.endsWith(Constants.docExtension))
+                    else if (fileName.endsWith(Constants.docExtension)
+                            || extension.equals("doc"))
                         mFileExtension = Constants.docExtension;
                     else {
                         StringUtils.getInstance().showSnackbar(mActivity, R.string.extension_not_supported);
@@ -244,6 +255,7 @@ public class TextToPdfFragment extends Fragment implements OnItemClickListener,
             return true;
         }
     }
+
     private void getRuntimePermissions() {
         if (Build.VERSION.SDK_INT < 29) {
             PermissionsUtils.getInstance().requestRuntimePermissions(this,
@@ -261,7 +273,7 @@ public class TextToPdfFragment extends Fragment implements OnItemClickListener,
 
     @Override
     public void onPDFCreationStarted() {
-        mMaterialDialog = DialogUtils.getInstance().createAnimationDialog(mActivity);
+        mMaterialDialog = DialogUtils.getInstance().createCustomAnimationDialog(mActivity, getString(R.string.converting_text_to_pdf));
         mMaterialDialog.show();
     }
 

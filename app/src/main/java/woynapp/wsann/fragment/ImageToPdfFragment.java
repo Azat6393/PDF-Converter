@@ -216,7 +216,12 @@ public class ImageToPdfFragment extends Fragment implements OnItemClickListener,
                 selectImages();
                 mIsButtonAlreadyClicked = true;
             } else {
-                getRuntimePermissions();
+                if (Build.VERSION.SDK_INT >= 33) {
+                    selectImages();
+                    mIsButtonAlreadyClicked = true;
+                } else {
+                    getRuntimePermissions();
+                }
             }
         }
     }
@@ -692,7 +697,7 @@ public class ImageToPdfFragment extends Fragment implements OnItemClickListener,
 
     @Override
     public void onPDFCreationStarted() {
-        mMaterialDialog = DialogUtils.getInstance().createAnimationDialog(mActivity);
+        mMaterialDialog = DialogUtils.getInstance().createCustomAnimationDialog(mActivity, getString(R.string.converting_image_to_pdf));
         mMaterialDialog.show();
     }
 

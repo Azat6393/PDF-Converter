@@ -1,5 +1,6 @@
 package woynapp.wsann.fragment;
 
+import static woynapp.wsann.R.string.fui_error_unknown;
 import static woynapp.wsann.util.Constants.THEME_BLACK;
 import static woynapp.wsann.util.Constants.THEME_DARK;
 import static woynapp.wsann.util.Constants.THEME_SYSTEM;
@@ -15,6 +16,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 
@@ -22,13 +24,14 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.provider.MediaStore;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,8 +59,6 @@ import com.google.firebase.storage.UploadTask;
 import com.itextpdf.text.Font;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -66,9 +67,10 @@ import butterknife.ButterKnife;
 //import butterknife.OnClick;
 //import lib.folderpicker.FolderPicker;
 import woynapp.wsann.R;
+import woynapp.wsann.activity.AboutUsActivity;
 import woynapp.wsann.activity.AuthActivity;
+import woynapp.wsann.activity.WebViewActivity;
 import woynapp.wsann.activity.auth.UserUtils;
-import woynapp.wsann.adapter.EnhancementOptionsAdapter;
 import woynapp.wsann.adapter.ProfileSettingsAdapter;
 import woynapp.wsann.interfaces.OnItemClickListener;
 import woynapp.wsann.model.EnhancementOptionsEntity;
@@ -87,8 +89,20 @@ public class SettingsFragment extends Fragment implements OnItemClickListener, V
 
     @BindView(R.id.settings_list)
     RecyclerView mEnhancementOptionsRecycleView;
+
     @BindView(R.id.log_out)
     CardView logOutBtn;
+    @BindView(R.id.rate_us)
+    CardView rate_us;
+    @BindView(R.id.about_us)
+    CardView about_us;
+    @BindView(R.id.website)
+    CardView website;
+    @BindView(R.id.privacy_policy)
+    CardView privacy_policy;
+    @BindView(R.id.terms_of_service)
+    CardView terms_of_service;
+
     @BindView(R.id.profile_photo)
     ImageView profilePhoto;
     @BindView(R.id.user_name)
@@ -112,11 +126,40 @@ public class SettingsFragment extends Fragment implements OnItemClickListener, V
     boolean isEditMode = false;
     Uri selectedUri = null;
 
+    private ActivityResultLauncher<Intent> pickSingleMediaLauncher;
+    private ActivityResultLauncher<String> getContent;
 
-    private ActivityResultLauncher<String> getContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
-            new ActivityResultCallback<Uri>() {
-                @Override
-                public void onActivityResult(Uri uri) {
+    private void registerPickSingleMediaLauncher(){
+        pickSingleMediaLauncher =
+                registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), it -> {
+                    if (it.getResultCode() == Activity.RESULT_OK) {
+                        selectedUri = it.getData().getData();
+                        Picasso.with(requireContext())
+                                .load(it.getData().getData())
+                                .resize(800, 0)
+                                .placeholder(R.drawable.avatar_icon)
+                                .error(R.drawable.avatar_icon)
+                                .transform(new CircleTransform())
+                                .into(profilePhoto);
+                        if (it.getData().getData() == null || it.getData().getData().equals("")) {
+                            if (!user.getUser_photo().equals("") && user.getUser_photo() != null) {
+                                Picasso.with(requireContext())
+                                        .load(user.getUser_photo())
+                                        .placeholder(R.drawable.avatar_icon)
+                                        .error(R.drawable.avatar_icon)
+                                        .into(profilePhoto);
+                            }
+                        }
+                    } else {
+                        Toast.makeText(requireContext(), getString(fui_error_unknown), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+
+    private void registerGetContent(){
+        getContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
+                uri -> {
                     selectedUri = uri;
                     Picasso.with(requireContext())
                             .load(uri)
@@ -125,7 +168,7 @@ public class SettingsFragment extends Fragment implements OnItemClickListener, V
                             .error(R.drawable.avatar_icon)
                             .transform(new CircleTransform())
                             .into(profilePhoto);
-                    if (uri == null || uri.equals("")){
+                    if (uri == null || uri.equals("")) {
                         if (!user.getUser_photo().equals("") && user.getUser_photo() != null) {
                             Picasso.with(requireContext())
                                     .load(user.getUser_photo())
@@ -134,8 +177,9 @@ public class SettingsFragment extends Fragment implements OnItemClickListener, V
                                     .into(profilePhoto);
                         }
                     }
-                }
-            });
+                });
+    }
+
 
     private ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
@@ -153,6 +197,20 @@ public class SettingsFragment extends Fragment implements OnItemClickListener, V
     public void onAttach(Context context) {
         super.onAttach(context);
         mActivity = (Activity) context;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        registerPickSingleMediaLauncher();
+        registerGetContent();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        pickSingleMediaLauncher.unregister();
+        getContent.unregister();
     }
 
     @SuppressLint("SetTextI18n")
@@ -179,6 +237,12 @@ public class SettingsFragment extends Fragment implements OnItemClickListener, V
 
         mAuth = FirebaseAuth.getInstance();
         logOutBtn.setOnClickListener(this);
+        rate_us.setOnClickListener(this);
+        about_us.setOnClickListener(this);
+        website.setOnClickListener(this);
+        privacy_policy.setOnClickListener(this);
+        terms_of_service.setOnClickListener(this);
+
         profilePhoto.setOnClickListener(this);
         saveBtn.setOnClickListener(this);
         editBtn.setOnClickListener(this);
@@ -186,6 +250,8 @@ public class SettingsFragment extends Fragment implements OnItemClickListener, V
         showSettingsOptions();
         return root;
     }
+
+    private static final int INTENT_REQUEST_GET_IMAGES = 13;
 
 
     @Override
@@ -198,6 +264,31 @@ public class SettingsFragment extends Fragment implements OnItemClickListener, V
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode != Activity.RESULT_OK || data == null)
+            return;
+
+        switch (requestCode) {
+            case INTENT_REQUEST_GET_IMAGES:
+                selectedUri = data.getData();
+                Picasso.with(requireContext())
+                        .load(data.getData())
+                        .resize(800, 0)
+                        .placeholder(R.drawable.avatar_icon)
+                        .error(R.drawable.avatar_icon)
+                        .transform(new CircleTransform())
+                        .into(profilePhoto);
+                if (data.getData() == null || data.getData().equals("")) {
+                    if (!user.getUser_photo().equals("") && user.getUser_photo() != null) {
+                        Picasso.with(requireContext())
+                                .load(user.getUser_photo())
+                                .placeholder(R.drawable.avatar_icon)
+                                .error(R.drawable.avatar_icon)
+                                .into(profilePhoto);
+                    }
+                }
+                break;
+        }
     }
 
     private void showSettingsOptions() {
@@ -451,6 +542,34 @@ public class SettingsFragment extends Fragment implements OnItemClickListener, V
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.about_us:
+                Intent about_us = new Intent(requireActivity(), AboutUsActivity.class);
+                requireActivity().startActivity(about_us);
+                break;
+            case R.id.website:
+                Intent websiteIntent = new Intent(requireActivity(), WebViewActivity.class);
+                websiteIntent.putExtra("url", "http://woynapp.com");
+                requireActivity().startActivity(websiteIntent);
+                break;
+            case R.id.privacy_policy:
+                Intent privacyIntent = new Intent(requireActivity(), WebViewActivity.class);
+                privacyIntent.putExtra("url", "http://woynapp.com/gizlilik-politikasi/");
+                requireActivity().startActivity(privacyIntent);
+                break;
+            case R.id.terms_of_service:
+                Intent termsIntent = new Intent(requireActivity(), WebViewActivity.class);
+                termsIntent.putExtra("url", "http://woynapp.com/terms-of-service/");
+                requireActivity().startActivity(termsIntent);
+                break;
+            case R.id.rate_us:
+                try {
+                    requireContext().startActivity(new Intent(Intent.ACTION_VIEW,
+                            Uri.parse("market://details?id=" +
+                                    requireContext().getApplicationContext().getPackageName())));
+                } catch (Exception e) {
+                    openWebPage("https://play.google.com/store/apps/details?id=swati4star.createpdf");
+                }
+                break;
             case R.id.log_out:
                 AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
                 builder.setMessage(R.string.dialog_message).setTitle(R.string.dialog_title);
@@ -480,9 +599,21 @@ public class SettingsFragment extends Fragment implements OnItemClickListener, V
                 if (isEditMode) {
                     if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
                             == PackageManager.PERMISSION_GRANTED) {
-                        getContent.launch("image/*");
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                            Intent intent = new Intent(MediaStore.ACTION_PICK_IMAGES);
+                            intent.setType("image/*");
+                            pickSingleMediaLauncher.launch(intent);
+                        }else {
+                            getContent.launch("image/*");
+                        }
                     } else {
-                        requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
+                        if (Build.VERSION.SDK_INT >= 33) {
+                            Intent intent = new Intent(MediaStore.ACTION_PICK_IMAGES);
+                            intent.setType("image/*");
+                            pickSingleMediaLauncher.launch(intent);
+                        } else {
+                            requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
+                        }
                     }
                 }
                 break;
@@ -501,6 +632,13 @@ public class SettingsFragment extends Fragment implements OnItemClickListener, V
                 changeEditMode();
                 break;
         }
+    }
+
+    public void openWebPage(String url) {
+        Uri uri = Uri.parse(url);
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        if (intent.resolveActivity(requireContext().getPackageManager()) != null)
+            requireContext().startActivity(intent);
     }
 
     private void saveNewName(String newName) {

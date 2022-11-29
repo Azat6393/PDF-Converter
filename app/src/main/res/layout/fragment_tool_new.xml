@@ -199,8 +199,7 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/card_add_text"/>
+                    android:src="@drawable/add_text_new_icon"/>
 
                 <TextView
                     android:layout_width="match_parent"

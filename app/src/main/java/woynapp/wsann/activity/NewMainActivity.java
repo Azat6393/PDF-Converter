@@ -44,6 +44,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.multidex.BuildConfig;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -96,6 +97,8 @@ public class NewMainActivity extends AppCompatActivity implements NavigationView
 
     private boolean mIsButtonAlreadyClicked = false;
 
+    FragmentManager fragmentManager;
+
     @Override
     public void recreate() {
         super.recreate();
@@ -116,6 +119,8 @@ public class NewMainActivity extends AppCompatActivity implements NavigationView
         newToolFragment = new NewToolFragment();
         newProfileFragment = new SettingsFragment();
         gifImageView = findViewById(R.id.kargo_bul_banner);
+
+        fragmentManager = getSupportFragmentManager();
 
 
         mNavigationView = findViewById(R.id.nav_view);
@@ -139,7 +144,12 @@ public class NewMainActivity extends AppCompatActivity implements NavigationView
                         selectImages();
                         mIsButtonAlreadyClicked = true;
                     } else {
-                        getRuntimePermissionsWithCamera();
+                        if (Build.VERSION.SDK_INT >= 33){
+                            selectImages();
+                            mIsButtonAlreadyClicked = true;
+                        }else {
+                            getRuntimePermissionsWithCamera();
+                        }
                     }
                 }
             }

@@ -29,6 +29,11 @@ public class FileInfoUtils {
      * @return String Size of pdf in formatted form
      */
     public static String getFormattedSize(File file) {
-        return String.format("%.2f MB", (double) file.length() / (1024 * 1024));
+        double sizeInMb = (double) file.length() / (1024 * 1024);
+        if (sizeInMb >= 1){
+            return String.format("%.2f MB", (double) file.length() / (1024 * 1024));
+        }else {
+            return String.format("%.2f KB", (double) file.length() / 1024);
+        }
     }
 }

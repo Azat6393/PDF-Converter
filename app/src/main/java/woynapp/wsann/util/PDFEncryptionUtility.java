@@ -2,6 +2,7 @@ package woynapp.wsann.util;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.view.View;
@@ -15,6 +16,7 @@ import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
 import com.itextpdf.text.pdf.PdfWriter;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
@@ -24,8 +26,12 @@ import woynapp.wsann.R;
 import woynapp.wsann.database.DatabaseHelper;
 import woynapp.wsann.interfaces.DataSetChanged;
 
+import static woynapp.wsann.util.Constants.AUTHORITY_APP;
 import static woynapp.wsann.util.Constants.MASTER_PWD_STRING;
 import static woynapp.wsann.util.Constants.appName;
+import static woynapp.wsann.util.Constants.pdfExtension;
+
+import androidx.core.content.FileProvider;
 
 public class PDFEncryptionUtility {
 
@@ -138,18 +144,51 @@ public class PDFEncryptionUtility {
      */
     private String doEncryption(String path, String password) throws IOException, DocumentException {
 
-        String masterpwd = mSharedPrefs.getString(MASTER_PWD_STRING, appName);
-        String finalOutputFile = mFileUtils.getUniqueFileName(path.replace(mContext.getString(R.string.pdf_ext),
-                mContext.getString(R.string.encrypted_file)));
+        File oldFile = new File(path);
+        Uri uri = FileProvider.getUriForFile(mContext, AUTHORITY_APP, oldFile);
 
-        PdfReader reader = new PdfReader(path);
-        PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(finalOutputFile));
-        stamper.setEncryption(password.getBytes(), masterpwd.getBytes(),
-                PdfWriter.ALLOW_PRINTING | PdfWriter.ALLOW_COPY, PdfWriter.ENCRYPTION_AES_128);
-        stamper.close();
-        reader.close();
-        new DatabaseHelper(mContext).insertRecord(finalOutputFile, mContext.getString(R.string.encrypted));
-        return finalOutputFile;
+        String finalOutputPath = StringUtils.getInstance().getDefaultStorageLocation()
+                + mFileUtils.getFileName(uri);
+
+        File newFile = new File(finalOutputPath);
+
+        if (!newFile.exists()) {
+            String masterpwd = mSharedPrefs.getString(MASTER_PWD_STRING, appName);
+
+            PdfReader reader = new PdfReader(path);
+            PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(finalOutputPath));
+            stamper.setEncryption(password.getBytes(), masterpwd.getBytes(),
+                    PdfWriter.ALLOW_PRINTING | PdfWriter.ALLOW_COPY, PdfWriter.ENCRYPTION_AES_128);
+            stamper.close();
+            reader.close();
+
+            oldFile.delete();
+        } else {
+            String masterpwd = mSharedPrefs.getString(MASTER_PWD_STRING, appName);
+            String finalOutputFile = mFileUtils.getUniqueFileName(path.replace(mContext.getString(R.string.pdf_ext),
+                    mContext.getString(R.string.encrypted_file)));
+
+            PdfReader reader = new PdfReader(path);
+            PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(finalOutputFile));
+            stamper.setEncryption(password.getBytes(), masterpwd.getBytes(),
+                    PdfWriter.ALLOW_PRINTING | PdfWriter.ALLOW_COPY, PdfWriter.ENCRYPTION_AES_128);
+            stamper.close();
+            reader.close();
+
+            File createdFile = new File(finalOutputFile);
+
+            if (newFile.delete()) {
+                if (createdFile.renameTo(newFile)) {
+                    finalOutputPath = path;
+                } else {
+                    finalOutputPath = finalOutputFile;
+                }
+            }
+        }
+
+
+        new DatabaseHelper(mContext).insertRecord(finalOutputPath, mContext.getString(R.string.encrypted));
+        return finalOutputPath;
     }
 
     /**
@@ -220,6 +259,7 @@ public class PDFEncryptionUtility {
             mDialog.dismiss();
         });
     }
+
     public void removePassword(final String file) {
 
         if (!isPDFEncrypted(file))
@@ -262,7 +302,8 @@ public class PDFEncryptionUtility {
 
     /**
      * This function removes the password for encrypted files.
-     * @param file - the path of the actual encrypted file.
+     *
+     * @param file          - the path of the actual encrypted file.
      * @param inputPassword - the password of the encrypted file.
      * @return - output file path
      */
@@ -307,13 +348,24 @@ public class PDFEncryptionUtility {
                 PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(finalOutputFile));
                 stamper.close();
                 reader.close();
+
+                new DatabaseHelper(mContext).insertRecord(finalOutputFile, mContext.getString(R.string.decrypted));
+                String filepath = finalOutputFile;
+
+                File oldFile = new File(file);
+                File newFile = new File(finalOutputFile);
+                if (oldFile.delete()) {
+                    if (newFile.renameTo(oldFile)) {
+                        filepath = file;
+                    }
+                }
                 if (dataSetChanged != null)
                     dataSetChanged.updateDataset();
-                new DatabaseHelper(mContext).insertRecord(finalOutputFile, mContext.getString(R.string.decrypted));
-                final String filepath = finalOutputFile;
+
+                String finalFilepath = filepath;
                 StringUtils.getInstance().getSnackbarwithAction(mContext, R.string.snackbar_pdfCreated)
                         .setAction(R.string.snackbar_viewAction,
-                                v2 -> mFileUtils.openFile(filepath, FileUtils.FileType.e_PDF)).show();
+                                v2 -> mFileUtils.openFile(finalFilepath, FileUtils.FileType.e_PDF)).show();
                 return true;
             }
         } catch (DocumentException | IOException e) {
@@ -322,6 +374,7 @@ public class PDFEncryptionUtility {
 
         return false;
     }
+
     private boolean removePasswordUsingDefMasterPassword(final String file,
                                                          final String[] inputPassword) {
         String finalOutputFile;
@@ -339,10 +392,21 @@ public class PDFEncryptionUtility {
                 stamper.close();
                 reader.close();
                 new DatabaseHelper(mContext).insertRecord(finalOutputFile, mContext.getString(R.string.decrypted));
-                final String filepath = finalOutputFile;
+
+                String filepath = finalOutputFile;
+
+                File oldFile = new File(file);
+                File newFile = new File(finalOutputFile);
+                if (oldFile.delete()) {
+                    if (newFile.renameTo(oldFile)) {
+                        filepath = file;
+                    }
+                }
+
+                String finalFilepath = filepath;
                 StringUtils.getInstance().getSnackbarwithAction(mContext, R.string.snackbar_pdfCreated)
                         .setAction(R.string.snackbar_viewAction,
-                                v2 -> mFileUtils.openFile(filepath, FileUtils.FileType.e_PDF)).show();
+                                v2 -> mFileUtils.openFile(finalFilepath, FileUtils.FileType.e_PDF)).show();
                 return true;
             }
         } catch (DocumentException | IOException e) {
@@ -351,7 +415,6 @@ public class PDFEncryptionUtility {
 
         return false;
     }
-
 
 
     private boolean removePasswordUsingInputMasterPassword(final String file,
@@ -366,13 +429,24 @@ public class PDFEncryptionUtility {
             PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(finalOutputFile));
             stamper.close();
             reader.close();
+
+            new DatabaseHelper(mContext).insertRecord(finalOutputFile, mContext.getString(R.string.decrypted));
+            String filepath = finalOutputFile;
+
+            File oldFile = new File(file);
+            File newFile = new File(finalOutputFile);
+            if (oldFile.delete()) {
+                if (newFile.renameTo(oldFile)) {
+                    filepath = file;
+                }
+            }
             if (dataSetChanged != null)
                 dataSetChanged.updateDataset();
-            new DatabaseHelper(mContext).insertRecord(finalOutputFile, mContext.getString(R.string.decrypted));
-            final String filepath = finalOutputFile;
+
+            String finalFilepath = filepath;
             StringUtils.getInstance().getSnackbarwithAction(mContext, R.string.snackbar_pdfCreated)
                     .setAction(R.string.snackbar_viewAction, v2 ->
-                            mFileUtils.openFile(filepath, FileUtils.FileType.e_PDF)).show();
+                            mFileUtils.openFile(finalFilepath, FileUtils.FileType.e_PDF)).show();
             return true;
 
         } catch (DocumentException | IOException e) {
@@ -393,10 +467,22 @@ public class PDFEncryptionUtility {
             stamper.close();
             reader.close();
             new DatabaseHelper(mContext).insertRecord(finalOutputFile, mContext.getString(R.string.decrypted));
-            final String filepath = finalOutputFile;
+
+            String filepath = finalOutputFile;
+
+            File oldFile = new File(file);
+            File newFile = new File(finalOutputFile);
+            if (oldFile.delete()) {
+                if (newFile.renameTo(oldFile)) {
+                    filepath = file;
+                }
+            }
+
+            String finalFilepath = filepath;
+
             StringUtils.getInstance().getSnackbarwithAction(mContext, R.string.snackbar_pdfCreated)
                     .setAction(R.string.snackbar_viewAction, v2 ->
-                            mFileUtils.openFile(filepath, FileUtils.FileType.e_PDF)).show();
+                            mFileUtils.openFile(finalFilepath, FileUtils.FileType.e_PDF)).show();
             return true;
 
         } catch (DocumentException | IOException e) {

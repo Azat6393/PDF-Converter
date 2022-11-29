@@ -268,7 +268,24 @@
     <!-- Extract images -->
     <string name="extract_images">Извлечь изображения</string>
     <string name="extract_images_failed">В указанном PDF-файле не найдено изображений</string>
-    <string name="extract_images_success">Обнаружено %1$d изображений в указанном файле. Они сохранены в папку PDF Files в корневой директории.</string>
+    <string name="extract_images_success">Обнаружено %1$d изображений в указанном файле. Они сохранены в папку PDF Converter в корневой директории.</string>
+
+    <string name="compressed">сжатый</string>
+
+    <string name="about_us_text">Сочетая удобный дизайн с современными и инновационными технологиями, мы предлагаем совместимые и удобные приложения бесплатно.</string>
+
+    <string name="w_scann_website">Веб-сайт W Scann</string>
+
+    <string name="converting_image_to_pdf">Преобразование изображения в PDF</string>
+    <string name="converting_text_to_pdf">Преобразование текста в PDF</string>
+    <string name="converting_pdf_to_image">Преобразование PDF в изображение</string>
+    <string name="converting_excel_to_pdf">Преобразование Excel в PDF</string>
+    <string name="adding_text_to_pdf">Добавление текста в PDF</string>
+    <string name="compressing_pdf">Сжатие PDF</string>
+    <string name="adding_password">Добавление пароля</string>
+    <string name="removing_password">Удаление пароля</string>
+    <string name="merging_pdf">Объединение PDF</string>
+    <string name="spliting_pdf">Разделение PDF</string>
 
     <string name="default_font_family_text">Установить шрифт (по умолчанию : %s)</string>
     <string name="font_family_text">"Шрифт : "</string>

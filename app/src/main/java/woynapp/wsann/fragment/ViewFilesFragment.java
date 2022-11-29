@@ -147,7 +147,7 @@ public class ViewFilesFragment extends Fragment
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (mViewFilesAdapter.getItemCount() > 0) {
-                    if (mIsAllFilesSelected) {
+                    if (!isChecked) {
                         mViewFilesAdapter.unCheckAll();
                     } else {
                         mViewFilesAdapter.checkAll();
@@ -371,6 +371,7 @@ public class ViewFilesFragment extends Fragment
         if (mIsMergeRequired) {
             mIsMergeRequired = false;
             mIsAllFilesSelected = false;
+            selectAll.setChecked(false);
             mActivity.invalidateOptionsMenu();
         }
     }
